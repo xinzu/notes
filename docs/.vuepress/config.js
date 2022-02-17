@@ -3,10 +3,11 @@
  * @Author       : yanhuan
  * @Date         : 2022-02-17 15:49:59
  * @LastEditors  : yanhuan
- * @LastEditTime : 2022-02-17 16:59:28
+ * @LastEditTime : 2022-02-17 18:31:23
  */
 module.exports = {
   title: 'yh的学习文档',
+  base: '/notes/',
   dest: 'dist',
   themeConfig: {
     sidebar: [
