@@ -1,0 +1,17 @@
+{
+  "name": "vuepress-notes",
+  "version": "1.0.0",
+  "description": "yh的学习文档",
+  "main": "index.js",
+  "author": "yh",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^3.2.3",
+    "vuepress": "^1.9.7"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:deploy": "gh-pages -d dist"
+  }
+}
