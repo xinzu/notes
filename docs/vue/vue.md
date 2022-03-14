@@ -301,7 +301,6 @@ var vm = new Vue({
 
   这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 `[v-cloak] { display: none }` 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
 
-  避免在data没有拿到页面出现 `{{ msg }}`的情况
 
 - v-once
 

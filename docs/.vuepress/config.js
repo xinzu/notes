@@ -3,7 +3,7 @@
  * @Author       : yanhuan
  * @Date         : 2022-02-17 15:49:59
  * @LastEditors  : yanhuan
- * @LastEditTime : 2022-02-17 18:37:25
+ * @LastEditTime : 2022-03-14 15:40:28
  */
 module.exports = {
   title: 'yh的学习文档',
@@ -85,6 +85,9 @@ module.exports = {
             path: '/react/react-native.md'
           }
         ]
+      }, {
+        title: 'typescript',
+        path: '/typescript/ts.md',
       }, {
         title: '工具类',
         children: [
