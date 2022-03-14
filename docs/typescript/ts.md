@@ -1,3 +1,5 @@
+
+
 # 简介
 
 1. TypeScript是JavaScript的超集。
@@ -6,7 +8,7 @@
 
 相较于JS而言，TS拥有了静态类型，更加严格的语法，更强大的功能；TS可以在代码执行前就完成代码的检查，减小了运行时异常的出现的几率；TS代码可以编译为任意版本的JS代码，可有效解决不同JS运行环境的兼容问题；同样的功能，TS的代码量要大于JS，但由于TS的代码结构更加清晰，变量类型更加明确，在后期代码的维护中TS却远远胜于JS。
 
-# 1、开发环境搭建
+## 1、开发环境搭建
 
 1. 安装Node.js：https://nodejs.org/dist/v14.15.1/node-v14.15.1-x64.msi
 
@@ -22,7 +24,7 @@
 
    
 
-# 2、基本类型
+## 2、基本类型
 
 - 类型声明
 
@@ -64,7 +66,7 @@
   |  tuple   |              [4,5]               | 元素，TS新增类型，固定长度数组 |
   |   enum   |            enum{A, B}            |       枚举，TS中新增类型       |
 
-## number
+### number
 
 ```typescript
 let decimal: number = 6;
@@ -74,13 +76,13 @@ let octal: number = 0o744;
 let big: bigint = 100n;
 ```
 
-## boolean
+### boolean
 
 ```typescript
 let isDone: boolean = false;
 ```
 
-## string
+### string
 
 ```typescript
 let color: string = "blue";
@@ -93,7 +95,7 @@ let sentence: string = `Hello, my name is ${fullName}.
 I'll be ${age + 1} years old next month.`;
 ```
 
-## 字面量
+### 字面量
 
 - 也可以使用字面量去指定变量的类型，通过字面量可以确定变量的取值范围
 
@@ -102,7 +104,7 @@ I'll be ${age + 1} years old next month.`;
   let num: 1 | 2 | 3 | 4 | 5;
   ```
 
-## object
+### object
 
 ```typescript
 // obj 只要是个对象就行
@@ -145,7 +147,7 @@ let obj4 = {
 }
 ```
 
-## array
+### array
 
 - 类型 + 方括号
 
@@ -157,7 +159,7 @@ let obj4 = {
   list.push('4');
   ```
 
-- 数组[泛型](#5、泛型（Generic）)
+- 数组[泛型](##5、泛型（Generic）)
 
   ```typescript
   let list: Array<number> = [1, 2, 3]
@@ -175,9 +177,8 @@ let obj4 = {
 
   虽然接口也可以用来描述数组，但是我们一般不会这么做，因为这种方式比前两种方式复杂多了。不过有一种情况例外，那就是它常用来表示类数组。
 
-  
 
-## function
+### function
 
 和object一样，单独使用没有任何意义
 
@@ -226,7 +227,7 @@ function reverse(x: number | string): number | string | void {
 }
 ```
 
-## any
+### any
 
 **ts中不建议使用any类型**
 
@@ -252,7 +253,7 @@ d = true;
   let s: string = d;
   ```
 
-## unknown
+### unknown
 
 **实际上就是一个类型安全的any，不能直接赋值给其他变量**
 
@@ -273,13 +274,13 @@ notSure = 'hello';
   let s: string = notSure;
   ```
 
-## void
+### void
 
 ```typescript
 let unusable: void = undefined;
 ```
 
-## never
+### never
 
 不能是任何值，可用于以下场景
 
@@ -290,7 +291,7 @@ function error(message: string): never {
 // 函数即使没有return语句也会返回undefined，遇到throw时立即抛出错误，不会有return
 ```
 
-## tuple
+### tuple
 
 固定长度的数组
 
@@ -299,7 +300,7 @@ let x: [string, number];
 x = ["hello", 10]; 
 ```
 
-## enum
+### enum
 
 类似于js中定义类型的对象
 
@@ -335,7 +336,7 @@ enum Color {
 let c: Color = Color.Green;
 ```
 
-## 类型断言
+### 类型断言
 
 有些情况下，变量的类型对于我们来说是很明确，但是TS编译器却并不清楚，此时，可以通过类型断言来告诉编译器变量的类型（临时将变量改为其他类型）
 
@@ -374,7 +375,7 @@ function swim(animal: Cat | Fish) {
 
 
 
-## 类型推论
+### 类型推论
 
 如果没有明确的指定类型，那么 TypeScript 会依照类型推论（Type Inference）的规则推断出一个类型。
 
@@ -382,7 +383,7 @@ function swim(animal: Cat | Fish) {
 - 当对变量的声明和赋值是同时进行的，TS编译器会自动判断变量的类型。所以如果你的变量的声明和赋值时同时进行的，可以省略掉类型声明
 - 如果变量声明时没有赋值，会被推断为`any`类型
 
-## 联合类型
+### 联合类型
 
 取值可以为多种类型中的一种。
 
@@ -394,9 +395,9 @@ d = 7;
 d = true;
 ```
 
-## 类型别名-type
+### 类型别名-type
 
-类型别名常用于[联合类型](##联合类型)
+类型别名常用于[联合类型](#联合类型)
 
 ```typescript
 type Name = string;
@@ -411,11 +412,11 @@ function getName(n: NameOrResolver): Name {
 }
 ```
 
-### 与interface的区别
+#### 与interface的区别
 
 [interface](#4、接口（Interface）)
 
-#### 相同点
+##### 相同点
 
 - 都可以描述一个对象或者函数
 
@@ -477,11 +478,11 @@ function getName(n: NameOrResolver): Name {
   }
   ```
 
-#### 不同点
+##### 不同点
 
 - type可以而interface不行
 
-  - type 可以声明基本[类型别名](##类型别名-type)，[联合类型](##联合类型)，[元组](##tuple)等类型
+  - type 可以声明基本[类型别名](#类型别名-type)，[联合类型](#联合类型)，[元组](#tuple)等类型
 
   ```typescript
   // 基本类型别名
@@ -534,23 +535,23 @@ function getName(n: NameOrResolver): Name {
   }
   ```
 
-  - interface能够[继承类](###接口继承类)
+  - interface能够[继承类](#接口继承类)
 
-## 声明合并
+### 声明合并
 
 如果定义了两个相同名字的函数、接口或类，那么它们会合并成一个类型
 
-### 函数的合并
+#### 函数的合并
 
-[重载](###重载)
+[重载](重载)
 
-### 接口的合并
+#### 接口的合并
 
-[interface](###与interface的区别)
+[interface](与interface的区别)
 
-# 3、类（class）
+## 3、类（class）
 
-##  ES6 中新增了class
+###  ES6 中新增了class
 
 - 类（Class）：定义了一件事物的抽象特点，包含它的属性和方法
 - 对象（Object）：类的实例，通过 `new` 生成
@@ -606,7 +607,7 @@ class Cat extends Animal {
 }
 ```
 
-## ES7 中有一些关于类的提案
+### ES7 中有一些关于类的提案
 
 ES6 中实例的属性只能通过构造函数中的 `this.xxx` 来定义，ES7 提案中可以直接在类里面定义
 
@@ -634,11 +635,11 @@ class Animal {
 }
 ```
 
-## TypeScript中类的用法
+### TypeScript中类的用法
 
 TypeScript 除了实现了所有 ES6 中的类的功能以外，还添加了一些新的用法。
 
-### 三种修饰符
+#### 三种修饰符
 
 - `public` 修饰的属性或方法是公有的，可以在任何地方被访问到，默认所有的属性和方法都是 `public` 的
 
@@ -712,7 +713,7 @@ const p = new Person('孙悟空', 18);
 p.name = '猪八戒';// 不能修改
 ```
 
-### 静态属性
+#### 静态属性
 
 与静态方法一样，可以直接通过类直接使用
 
@@ -723,7 +724,7 @@ class Person {
 console.log(Person.name); // 孙悟空
 ```
 
-### readonly
+#### readonly
 
 只读属性关键字，只允许出现在属性声明或索引签名或构造函数中
 
@@ -738,7 +739,7 @@ class Animal {
 }
 ```
 
-### 抽象类
+#### 抽象类
 
 抽象类是专门用来被其他类所继承的类，它只能被其他类所继承不能用来创建实例。
 
@@ -761,7 +762,7 @@ class Dog extends Animals{
 }
 ```
 
-### 类实现接口
+#### 类实现接口
 
 用 `implements` 关键字来实现
 
@@ -816,9 +817,9 @@ class Car implements Alarm, Light {
 }
 ```
 
-# 4、接口（Interface）
+## 4、接口（Interface）
 
-TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](###类实现接口)以外，也常用于对「对象的形状（Shape）」进行描述。
+TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](#类实现接)以外，也常用于对「对象的形状（Shape）」进行描述。
 
 ```typescript
 interface Person{
@@ -833,9 +834,9 @@ function fn(per: Person){
 fn({name:'孙悟空', sayHello() {console.log(`Hello, 我是 ${this.name}`)}});
 ```
 
-## 继承
+### 继承
 
-### 接口继承接口
+#### 接口继承接口
 
 ```typescript
 interface Name { 
@@ -846,7 +847,7 @@ interface User extends Name {
 }
 ```
 
-### 接口继承类
+#### 接口继承类
 
 ```typescript
 class Point {
@@ -873,13 +874,13 @@ interface Point3d extends PointInstanceType {
 let point3d: Point3d = {x: 1, y: 2, z: 3};
 ```
 
-# 5、泛型（Generic）
+## 5、泛型（Generic）
 
 > 指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。
 
 定义一个函数或类时，有些情况下无法确定其中要使用的具体类型（返回值、参数、属性的类型不能确定），此时泛型便能够发挥作用。
 
-## 一个简单的栗子
+### 一个简单的栗子
 
 ```typescript
 // 这里的<T>就是泛型，T是我们给这个类型起的名字（不一定非叫T），设置泛型后即可在函数中使用T来表示该类型。
@@ -896,7 +897,7 @@ createArray<string>(3, 'x'); // ['x', 'x', 'x']
 createArray(3, 'x'); // ['x', 'x', 'x']
 ```
 
-## 多个类型参数
+### 多个类型参数
 
 定义泛型的时候，可以一次定义多个类型参数：
 
@@ -907,7 +908,7 @@ function swap<T, U>(tuple: [T, U]): [U, T] {
 swap([7, 'seven']); // ['seven', 7]
 ```
 
-## 泛型约束
+### 泛型约束
 
 在函数内部使用泛型变量的时候，由于事先不知道它是哪种类型，所以不能随意的操作它的属性或方法。
 
@@ -947,7 +948,7 @@ let x = { a: 1, b: 2, c: 3, d: 4 };
 copyFields(x, { b: 10, d: 20 }); // { a: 1, b: 10, c: 3, d: 20 }
 ```
 
-## 泛型接口
+### 泛型接口
 
 使用含有泛型的接口来定义函数的形状
 
@@ -980,7 +981,7 @@ createArray = function<T>(length: number, value: T): Array<T> {
 createArray(3, 'x'); // ['x', 'x', 'x']
 ```
 
-## 泛型类
+### 泛型类
 
 ```typescript
 class GenericNumber<T> {
@@ -993,7 +994,7 @@ myGenericNumber.zeroValue = 0;
 myGenericNumber.add = function(x, y) { return x + y; };
 ```
 
-## 泛型参数的默认类型
+### 泛型参数的默认类型
 
 当使用泛型时没有在代码中直接指定类型参数，从实际值参数中也无法推测出时，这个默认类型就会起作用。
 
@@ -1009,9 +1010,9 @@ function createArray<T = string>(length: number, value: T): Array<T> {
 }
 ```
 
-# 6、编译选项
+## 6、编译选项
 
-## 自动编译文件
+### 自动编译文件
 
 - 编译文件时，使用 -w 指令后，TS编译器会自动监视文件的变化，并在文件发生变化时对文件进行重新编译。
 
@@ -1021,7 +1022,7 @@ function createArray<T = string>(length: number, value: T): Array<T> {
     tsc xxx.ts -w
     ```
 
-## tsconfig.json配置
+### tsconfig.json配置
 
 **自动编译整个项目**
 
@@ -1247,9 +1248,9 @@ function createArray<T = string>(length: number, value: T): Array<T> {
           - 是否忽略不可达代码
 
 
-# 7、声明文件
+## 7、声明文件
 
-# webpack
+## webpack
 
 通常情况下，实际开发中我们都需要使用构建工具对代码进行打包，TS同样也可以结合构建工具一起使用，下边以webpack为例介绍一下如何结合构建工具使用TS。
 
@@ -1351,7 +1352,7 @@ function createArray<T = string>(length: number, value: T): Array<T> {
 7. 在src下创建ts文件，并在并命令行执行```npm run build```对代码进行编译，或者执行```npm start```来启动开发服务器
 
 
-# Babel
+## Babel
 
 结合babel来对代码进行转换以使其可以兼容到更多的浏览器，在上述步骤的基础上，通过以下步骤再将babel引入到项目中。
 

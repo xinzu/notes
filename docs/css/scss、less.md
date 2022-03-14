@@ -1,4 +1,4 @@
-# 变量
+## 变量
 
 ```
 @width: 10px;
@@ -16,7 +16,7 @@
 }
 ```
 
-# 混合
+## 混合
 
 ```
 .bordered {
@@ -48,7 +48,7 @@
 }
 ```
 
-# 嵌套
+## 嵌套
 
 ```
 #header {
@@ -81,7 +81,7 @@
 }
 ```
 
-# 运算
+## 运算
 
 > 算术运算符 `+`、`-`、`*`、`/` 可以对任何数字、颜色或变量进行运算。如果可能的话，算术运算符在加、减或比较之前会进行单位换算。计算的结果以最左侧操作数的单位类型为准。如果单位换算无效或失去意义，则忽略单位。无效的单位换算例如：px 到 cm 或 rad 到 % 的转换。
 
@@ -101,7 +101,7 @@
 background-color: #112244 + #111; // 结果是 #223355
 ```
 
-# 转义
+## 转义
 
 ```
 @min768: (min-width: 768px);
@@ -119,11 +119,11 @@ background-color: #112244 + #111; // 结果是 #223355
 }
 ```
 
-# 函数
+## 函数
 
-## 逻辑函数
+### 逻辑函数
 
-### if
+#### if
 
 ```
 @some: foo;
@@ -140,7 +140,7 @@ div {
 }
 ```
 
-### boolean
+#### boolean
 
 ```
 @bg: black;
@@ -158,11 +158,11 @@ div {
 }
 ```
 
-## 字符串相关函数
+### 字符串相关函数
 
-### escape
+#### escape
 
-### URL-encoding
+#### URL-encoding
 
 ```
 escape('a=1')
@@ -171,7 +171,7 @@ escape('a=1')
 a%3D1
 ```
 
-### %--format
+#### %--format
 
 ```
 format-a-d: %("repetitions: %a file: %d", 1 + 2, "directory/file.less");
@@ -190,7 +190,7 @@ format-s-upper: "repetitions: 3 file: directory%2Ffile.less";
 //A/D/S:大写时会将'/'符号进行转换
 ```
 
-### replace
+#### replace
 
 **类似于JS中的replace，**
 
@@ -209,9 +209,9 @@ replace("Hello, Mars?", "Mars\?", "Earth!");
 "Hello, Earth!";
 ```
 
-## List相关函数
+### List相关函数
 
-### length
+#### length
 
 ```
 @list: "banana", "tomato", "potato", "peach";
@@ -221,7 +221,7 @@ n: length(@list);
 n: 4
 ```
 
-### extract
+#### extract
 
 **取list的第几位，从1开始**
 
@@ -233,7 +233,7 @@ value: extract(@list, 3);
 value: coconut;
 ```
 
-### range
+#### range
 
 - `start` - (optional) 初始值
 - `end` - 结束值
@@ -250,7 +250,7 @@ value: 1 2 3 4
 border: 10px, 20px, 30px
 ```
 
-### each
+#### each
 
 - `list` 
 - `rules`
@@ -311,9 +311,9 @@ each(@selectors, {
 
 ```
 
-## Math -- JS Math.xxx
+### Math -- JS Math.xxx
 
-## Type
+### Type
 
 - isnumber
 
@@ -354,11 +354,11 @@ each(@selectors, {
 
 - isruleset
 
-## Other
+### Other
 
-### color
+#### color
 
-### image-size/image-width/image-height
+#### image-size/image-width/image-height
 
 ```
 image-size("file.png");
@@ -367,7 +367,7 @@ image-size("file.png");
 10px 10px
 ```
 
-## convert
+### convert
 
 ```
 convert(9s, "ms")
@@ -380,13 +380,13 @@ convert(8, mm)
 8
 ```
 
-## Color Definition Functions
+### Color Definition Functions
 
 - rgb
 - rgba
 - argb
 
-# 命名空间和访问符
+## 命名空间和访问符
 
 ```
 #bundle() {
@@ -407,7 +407,7 @@ convert(8, mm)
 }
 ```
 
-# 映射
+## 映射
 
 ```
 #colors() {
@@ -421,15 +421,15 @@ convert(8, mm)
 }
 ```
 
-# 作用域
+## 作用域
 
 **混合（mixin）和变量的定义不必在引用之前事先定义**
 
-# 注释
+## 注释
 
 **块注释和行注释都可以使用**
 
-# 导入
+## 导入
 
 `@import "typo.css";`
 

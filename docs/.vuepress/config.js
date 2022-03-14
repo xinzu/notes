@@ -3,13 +3,14 @@
  * @Author       : yanhuan
  * @Date         : 2022-02-17 15:49:59
  * @LastEditors  : yanhuan
- * @LastEditTime : 2022-03-14 15:40:28
+ * @LastEditTime : 2022-03-14 16:52:01
  */
 module.exports = {
   title: 'yh的学习文档',
   base: '/notes/',
   dest: 'dist',
   themeConfig: {
+    sidebarDepth: 4,
     sidebar: [
       {
         title: '基础知识扩展',
@@ -58,6 +59,9 @@ module.exports = {
         children: [{
           title: 'http状态码',
           path: '/http/http状态码.md',
+        }, {
+            title: 'https',
+            path: '/http/https.md',
         }]
       },
       {

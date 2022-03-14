@@ -1,6 +1,6 @@
-# 从vue2中迁移
+## 从vue2中迁移
 
-## v-for中的Ref数组
+### v-for中的Ref数组
 
 - 在 **vue 2** 中，如果给 v-for 绑定一个 ref ，通过这个 ref 可以获取到全部 v-for 的节点。
 
@@ -26,7 +26,7 @@ handleNodes(el) {
 > - `nodesRef` 不必是数组：它也可以是一个对象，其 ref 会通过迭代的 key 被设置。
 > - 如果需要，`nodesRef` 也可以是响应式的且可以被监听
 
-## 异步组件
+### 异步组件
 
 1. 异步组件的定义需要通过将其包裹在新的 `defineAsyncComponent` 助手方法中来显式地定义
 
@@ -64,7 +64,7 @@ handleNodes(el) {
    )
    ```
 
-## $attrs
+### $attrs
 
 **vue2**中，$attrs 不包含 class  和  style
 
@@ -102,11 +102,11 @@ export default {
 </label>
 ```
 
-## $children
+### $children
 
 在 vue3 中，`$children` property 已移除，不再支持。如果你需要访问子组件实例，我们建议使用 $refs
 
-## 自定义元素
+### 自定义元素
 
 如果我们想在 Vue 外部定义添加自定义元素 (例如使用 Web 组件 API)，我们需要“指示”Vue 将其视为自定义元素。
 
@@ -140,7 +140,7 @@ export default {
   app.config.isCustomElement = tag => tag === 'plastic-button'
   ```
 
-## is动态组件
+### is动态组件
 
 在 3.0 中，我们仅将 Vue 对 `is` 属性的特殊处理限制到 `<component>` tag。
 
@@ -179,12 +179,12 @@ export default {
   </table>
   ```
 
-## data选项
+### data选项
 
 1. 在 3.x，`data` 选项已标准化为只接受返回 `object` 的 `function`。
 2. 当合并来自 mixin 或 extend 的多个 `data` 返回值时，现在是浅层次合并的而不是深层次合并的(只合并根级属性)。
 
-## emit选项
+### emit选项
 
 Vue 3 目前提供一个 `emits` 选项，和现有的 `props` 选项类似。这个选项可以用来定义组件可以向其父组件触发的事件
 
@@ -207,7 +207,7 @@ export default {
 </script>
 ```
 
-## 移除过滤器
+### 移除过滤器
 
 从 Vue 3.0 开始，过滤器已删除，不再支持，替换方案如下：
 
@@ -227,13 +227,13 @@ export default {
    <p>{{ $filters.currencyUSD(accountBalance) }}</p>
    ```
 
-## 支持多个根节点
+### 支持多个根节点
 
 vue2.x单文本组件中，在`template`内只能有一个根节点
 
 vue3.x支持多节点
 
-## 监听组件生命周期
+### 监听组件生命周期
 
 **vue2**中用的是@hook
 
@@ -245,9 +245,9 @@ vue3.x支持多节点
 
 `<child-component @vnodeUpdated="onUpdated">`
 
-## 指令
+### 指令
 
-### v-bind 合并行为
+#### v-bind 合并行为
 
 ```
 <div id="red" v-bind="{ id: 'blue' }"></div>
@@ -257,7 +257,7 @@ vue3.x支持多节点
 <div id="blue"></div>
 ```
 
-### v-if 与 v-for的优先级对比
+#### v-if 与 v-for的优先级对比
 
 2.x 版本中在一个元素上同时使用 `v-if` 和 `v-for` 时，`v-for` 会优先作用。
 
@@ -265,14 +265,14 @@ vue3.x支持多节点
 
 **以后如果有v-if + v-for 的面试题，可以把vue3的改动也加上**
 
-### v-model
+#### v-model
 
 在 3.x 中，**自定义组件**上的 `v-model` 相当于传递了 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
 
 - 修改model名称，可以通过`v-model:title="pageTitle"`，与vue2中的`v-bind:title.sync="pageTitle"`
 - 一个组件可以使用多个v-model
 
-### 自定义指令
+#### 自定义指令
 
 1. 指令的钩子函数已经被重命名，以更好地与组件的生命周期保持一致。
 
@@ -291,9 +291,9 @@ vue3.x支持多节点
 
    在vue3中通过`binding.instance`
 
-### 移除了 v-on 的 native 修饰符
+#### 移除了 v-on 的 native 修饰符
 
-## 按键修饰符
+### 按键修饰符
 
 - 不再支持使用数字 (即键码) 作为 `v-on` 修饰符
 
@@ -311,11 +311,11 @@ vue3.x支持多节点
   <input v-on:keyup.f1="showHelpText" />
   ```
 
-## 移除$listener
+### 移除$listener
 
 现在事件监听器是 `$attrs` 的一部分
 
-## 移除内联模版
+### 移除内联模版
 
 vue2内联模版
 
@@ -339,11 +339,11 @@ var FatherComponent = Vue.component({
 </div>
 ```
 
-## propsData
+### propsData
 
 `propsData` 选项之前用于在创建 Vue 实例的过程中传入 prop，现在它被移除了。如果想为 Vue 3 应用的根组件传入 prop，请使用 [createApp](#createApp) 的第二个参数。
 
-## 插槽统一
+### 插槽统一
 
 定义插槽名称
 
@@ -370,15 +370,15 @@ this.$scopedSlots.header
 this.$slots.header()
 ```
 
-## 过渡的class名更改
+### 过渡的class名更改
 
 过渡类名 `v-enter` 修改为 `v-enter-from`、过渡类名 `v-leave` 修改为 `v-leave-from`。
 
-## API改动
+### API改动
 
-### 全局API
+#### 全局API
 
-#### createApp
+##### createApp
 
 vue3引入了`createApp`，Vue上的所有全局API在创建的app实例上同样存在
 
@@ -387,13 +387,13 @@ import { createApp } from 'vue'
 const app = createApp({})
 ```
 
-##### `config.productionTip`移除
+###### `config.productionTip`移除
 
-##### `config.ignoredElements` 替换为 `app.config.isCustomElement`
+###### `config.ignoredElements` 替换为 `app.config.isCustomElement`
 
 ​	[自定义元素](#自定义元素)
 
-##### `Vue.prototype` 替换为 `app.config.globalProperties`
+###### `Vue.prototype` 替换为 `app.config.globalProperties`
 
 ```
 Vue.prototype.$http
@@ -401,7 +401,7 @@ Vue.prototype.$http
 this.$http
 ```
 
-##### 移除`Vue.extend` 
+###### 移除`Vue.extend` 
 
 > 在 Vue 3 中，我们强烈建议使用 [组合式 API](https://v3.cn.vuejs.org/api/composition-api.html) 来替代继承与 mixin。如果因为某种原因仍然需要使用组件继承，你可以使用 [`extends` 选项](https://v3.cn.vuejs.org/api/options-composition.html#extends) 来代替 `Vue.extend`。
 
@@ -435,14 +435,14 @@ const Profile = {
 Vue.createApp(Profile).mount('#mount-point')
 ```
 
-##### 引入插件方法修改
+###### 引入插件方法修改
 
 ```
 const app = createApp(MyApp)
 app.use(VueRouter)
 ```
 
-#### 挂载APP实例
+##### 挂载APP实例
 
 ```	
 import { createApp } from 'vue'
@@ -457,7 +457,7 @@ const app = createApp(MyApp)
 app.mount('#app')
 ```
 
-#### Provide / Inject
+##### Provide / Inject
 
 ```
 // 在入口
@@ -474,7 +474,7 @@ export default {
 }
 ```
 
-#### 在应用之间共享配置
+##### 在应用之间共享配置
 
 ```
 import { createApp } from 'vue'
@@ -491,7 +491,7 @@ createMyApp(Foo).mount('#foo')
 createMyApp(Bar).mount('#bar')
 ```
 
-#### Treeshaking
+##### Treeshaking
 
 vue2中，全局 API 如 `Vue.nextTick()` 是不支持 tree-shake 的，不管它们实际是否被使用，都会被包含在最终的打包产物中。
 
@@ -506,13 +506,13 @@ vue2中，全局 API 如 `Vue.nextTick()` 是不支持 tree-shake 的，不管�
 
 在 Vue 3 中，全局和内部 API 都经过了重构，并考虑到了 tree-shaking 的支持。因此，全局 API 现在只能作为 ES 模块构建的命名导出进行访问（使用时要引入，否则会**报错**）。
 
-### 挂载API变化
+#### 挂载API变化
 
 在 Vue 2.x 中，当挂载一个具有 `template` 的应用时，被渲染的内容会**替换**我们要挂载的目标元素。
 
 在 Vue 3.x 中，被渲染的应用会作为**子元素**插入。
 
-### 事件API
+#### 事件API
 
 `$on`，`$off` 和 `$once` 实例方法已被移除，组件实例不再实现事件触发接口
 
@@ -520,9 +520,9 @@ vue2中，全局 API 如 `Vue.nextTick()` 是不支持 tree-shake 的，不管�
 
 Event bus 模式可以被替换为实现了事件触发器接口的外部库，例如 [mitt](https://github.com/developit/mitt) 或 [tiny-emitter](https://github.com/scottcorgan/tiny-emitter)。
 
-### 渲染函数API
+#### 渲染函数API
 
-#### 参数
+##### 参数
 
 在vue2中，`render` 函数会自动接收 `h` 函数 (它是 `createElement` 的惯用别名) 作为参数
 
@@ -530,7 +530,7 @@ Event bus 模式可以被替换为实现了事件触发器接口的外部库，�
 
 ​	`import { h } from 'vue'`
 
-#### 注册组件
+##### 注册组件
 
 ```
 Vue.component('button-counter', {
@@ -570,21 +570,21 @@ export default {
 }
 ```
 
-# Vue3快速上手
+## Vue3快速上手
 
 <img src="https://user-images.githubusercontent.com/499550/93624428-53932780-f9ae-11ea-8d16-af949e16a09f.png" style="width:200px" />
 
 
 
-## 1.Vue3简介
+### 1.Vue3简介
 
 - 2020年9月18日，Vue.js发布3.0版本，代号：One Piece（海贼王）
 - 耗时2年多、[2600+次提交](https://github.com/vuejs/vue-next/graphs/commit-activity)、[30+个RFC](https://github.com/vuejs/rfcs/tree/master/active-rfcs)、[600+次PR](https://github.com/vuejs/vue-next/pulls?q=is%3Apr+is%3Amerged+-author%3Aapp%2Fdependabot-preview+)、[99位贡献者](https://github.com/vuejs/vue-next/graphs/contributors) 
 - github上的tags地址：https://github.com/vuejs/vue-next/releases/tag/v3.0.0
 
-## 2.Vue3带来了什么
+### 2.Vue3带来了什么
 
-### 1.性能的提升
+#### 1.性能的提升
 
 - 打包大小减少41%
 
@@ -594,7 +594,7 @@ export default {
 
   ......
 
-### 2.源码的升级
+#### 2.源码的升级
 
 - 使用Proxy代替defineProperty实现响应式
 
@@ -602,11 +602,11 @@ export default {
 
   ......
 
-### 3.拥抱TypeScript
+#### 3.拥抱TypeScript
 
 - Vue3可以更好的支持TypeScript
 
-### 4.新的特性
+#### 4.新的特性
 
 1. Composition API（组合API）
 
@@ -626,9 +626,9 @@ export default {
    - 移除keyCode支持作为 v-on 的修饰符
    - ......
 
-# 一、创建Vue3.0工程
+## 一、创建Vue3.0工程
 
-## 1.使用 vue-cli 创建
+### 1.使用 vue-cli 创建
 
 官方文档：https://cli.vuejs.org/zh/guide/creating-a-project.html#vue-create
 
@@ -644,7 +644,7 @@ cd vue_test
 npm run serve
 ```
 
-## 2.使用 vite 创建
+### 2.使用 vite 创建
 
 官方文档：https://v3.cn.vuejs.org/guide/installation.html#vite
 
@@ -670,11 +670,11 @@ npm install
 npm run dev
 ```
 
-# 二、常用 Composition API
+## 二、常用 Composition API
 
 官方文档: https://v3.cn.vuejs.org/guide/composition-api-introduction.html
 
-## 1.拉开序幕的setup
+### 1.拉开序幕的setup
 
 1. 理解：Vue3.0中一个新的配置项，值为一个函数。
 2. setup是所有<strong style="color:#DD5145">Composition API（组合API）</strong><i style="color:gray;font-weight:bold">“ 表演的舞台 ”</i>。
@@ -689,28 +689,28 @@ npm run dev
       - 如果有重名, setup优先。
    2. setup不能是一个async函数，因为返回值不再是return的对象, 而是promise, 模板看不到return对象中的属性。（后期也可以返回一个Promise实例，但需要Suspense和异步组件的配合）
 
-##  2.ref函数
+###  2.ref函数
 
 - 作用: 定义一个响应式的数据
-- 语法: ```const xxx = ref(initValue)``` 
+- 语法: `const xxx = ref(initValue)`
   - 创建一个包含响应式数据的<strong style="color:#DD5145">引用对象（reference对象，简称ref对象）</strong>。
-  - JS中操作数据： ```xxx.value```
-  - 模板中读取数据: 不需要.value，直接：```<div>{{xxx}}</div>```
+  - JS中操作数据： `xxx.value`
+  - 模板中读取数据: 不需要.value，直接：`<div>{{xxx}}</div>`
 - 备注：
   - 接收的数据可以是：基本类型、也可以是对象类型。
   - 基本类型的数据：响应式依然是靠``Object.defineProperty()``的```get```与```set```完成的。
   - 对象类型的数据：内部 <i style="color:gray;font-weight:bold">“ 求助 ”</i> 了Vue3.0中的一个新函数—— ```reactive```函数。
 
-## 3.reactive函数
+### 3.reactive函数
 
 - 作用: 定义一个<strong style="color:#DD5145">对象类型</strong>的响应式数据（基本类型不要用它，要用```ref```函数）
 - 语法：```const 代理对象= reactive(源对象)```接收一个对象（或数组），返回一个<strong style="color:#DD5145">代理对象（Proxy的实例对象，简称proxy对象）</strong>
 - reactive定义的响应式数据是“深层次的”。
 - 内部基于 ES6 的 Proxy 实现，通过代理对象操作源对象内部数据进行操作。
 
-## 4.Vue3.0中的响应式原理
+### 4.Vue3.0中的响应式原理
 
-### vue2.x的响应式
+#### vue2.x的响应式
 
 - 实现原理：
 
@@ -730,7 +730,7 @@ npm run dev
   - 新增属性、删除属性, 界面不会更新。
   - 直接通过下标修改数组, 界面不会自动更新。
 
-### Vue3.0的响应式
+#### Vue3.0的响应式
 
 - 实现原理: 
 
@@ -763,7 +763,7 @@ npm run dev
       proxy.name = 'tom'   
       ```
 
-## 5.reactive对比ref
+### 5.reactive对比ref
 
 -  从定义数据角度对比：
    -  ref用来定义：<strong style="color:#DD5145">基本类型数据</strong>。
@@ -776,7 +776,7 @@ npm run dev
    -  ref定义的数据：操作数据<strong style="color:#DD5145">需要</strong>```.value```，读取数据时模板中直接读取<strong style="color:#DD5145">不需要</strong>```.value```。
    -  reactive定义的数据：操作数据与读取数据：<strong style="color:#DD5145">均不需要</strong>```.value```。
 
-## 6.setup的两个注意点
+### 6.setup的两个注意点
 
 - setup执行的时机
   - 在beforeCreate之前执行一次，this是undefined。
@@ -789,9 +789,9 @@ npm run dev
     - emit: 分发自定义事件的函数, 相当于 ```this.$emit```。
 
 
-## 7.计算属性与监视
+### 7.计算属性与监视
 
-### 1.computed函数
+#### 1.computed函数
 
 - 与Vue2.x中computed配置功能一致
 
@@ -820,7 +820,7 @@ npm run dev
   }
   ```
 
-### 2.watch函数
+#### 2.watch函数
 
 - 与Vue2.x中watch配置功能一致
 
@@ -864,7 +864,7 @@ npm run dev
   },{deep:true}) //此处由于监视的是reactive素定义的对象中的某个属性，所以deep配置有效
   ```
 
-### 3.watchEffect函数
+#### 3.watchEffect函数
 
 - watch的套路是：既要指明监视的属性，也要指明监视的回调。
 
@@ -884,18 +884,8 @@ npm run dev
   })
   ```
 
-## 8.生命周期
-
-<div style="display: flex">
-    <div style="border:1px solid black;width:380px;margin-right:40px;">
-        <strong>vue2.x的生命周期</strong>
-        <img src="https://cn.vuejs.org/images/lifecycle.png" alt="lifecycle_2" style="zoom:33%;width:1200px" />
-    </div>
-    <div style="border:1px solid black;width:510px;height:985px;">
-        <strong>vue3.0的生命周期</strong>
-        <img src="https://v3.cn.vuejs.org/images/lifecycle.svg" alt="lifecycle_2" style="zoom:33%;width:2500px" />
-    </div>
-</div>
+### 8.生命周期
+![vue3生命周期](/imgs/vue/vue3lifecycle.png)
 
 - Vue3.0中可以继续使用Vue2.x中的生命周期钩子，但有有两个被更名：
   - ```beforeDestroy```改名为 ```beforeUnmount```
@@ -910,7 +900,7 @@ npm run dev
   - `beforeUnmount` ==>`onBeforeUnmount`
   - `unmounted` =====>`onUnmounted`
 
-## 9.自定义hook函数
+### 9.自定义hook函数
 
 - 什么是hook？—— 本质是一个函数，把setup函数中使用的Composition API进行了封装。
 
@@ -920,7 +910,7 @@ npm run dev
 
 
 
-## 10.toRef
+### 10.toRef
 
 - 作用：创建一个 ref 对象，其value值指向另一个对象中的某个属性。
 - 语法：```const name = toRef(person,'name')```
@@ -930,9 +920,9 @@ npm run dev
 - 扩展：```toRefs``` 与```toRef```功能一致，但可以批量创建多个 ref 对象，语法：```toRefs(person)```
 
 
-# 三、其它 Composition API
+## 三、其它 Composition API
 
-## 1.shallowReactive 与 shallowRef
+### 1.shallowReactive 与 shallowRef
 
 - shallowReactive：只处理对象最外层属性的响应式（浅响应式）。
 - shallowRef：只处理基本数据类型的响应式, 不进行对象的响应式处理。
@@ -941,13 +931,13 @@ npm run dev
   -  如果有一个对象数据，结构比较深, 但变化时只是外层属性变化 ===> shallowReactive。
   -  如果有一个对象数据，后续功能不会修改该对象中的属性，而是生新的对象来替换 ===> shallowRef。
 
-## 2.readonly 与 shallowReadonly
+### 2.readonly 与 shallowReadonly
 
 - readonly: 让一个响应式数据变为只读的（深只读）。
 - shallowReadonly：让一个响应式数据变为只读的（浅只读）。
 - 应用场景: 不希望数据被修改时。
 
-## 3.toRaw 与 markRaw
+### 3.toRaw 与 markRaw
 
 - toRaw：
   - 作用：将一个由```reactive```生成的<strong style="color:orange">响应式对象</strong>转为<strong style="color:orange">普通对象</strong>。
@@ -958,7 +948,7 @@ npm run dev
     1. 有些值不应被设置为响应式的，例如复杂的第三方类库等。
     2. 当渲染具有不可变数据源的大列表时，跳过响应式转换可以提高性能。
 
-## 4.customRef
+### 4.customRef
 
 - 作用：创建一个自定义的 ref，并对其依赖项跟踪和更新触发进行显式控制。
 
@@ -1007,7 +997,7 @@ npm run dev
 
   
 
-## 5.provide 与 inject
+### 5.provide 与 inject
 
 <img src="https://v3.cn.vuejs.org/images/components_provide.png" style="width:300px" />
 
@@ -1039,16 +1029,16 @@ npm run dev
      }
      ```
 
-## 6.响应式数据的判断
+### 6.响应式数据的判断
 
 - isRef: 检查一个值是否为一个 ref 对象
 - isReactive: 检查一个对象是否是由 `reactive` 创建的响应式代理
 - isReadonly: 检查一个对象是否是由 `readonly` 创建的只读代理
 - isProxy: 检查一个对象是否是由 `reactive` 或者 `readonly` 方法创建的代理
 
-# 四、Composition API 的优势
+## 四、Composition API 的优势
 
-## 1.Options API 存在的问题
+### 1.Options API 存在的问题
 
 使用传统OptionsAPI中，新增或者修改一个需求，就需要分别在data，methods，computed里修改 。
 
@@ -1076,7 +1066,7 @@ npm run dev
 
 
 
-## 2.Composition API 的优势
+### 2.Composition API 的优势
 
 我们可以更加优雅的组织我们的代码，函数。让相关功能的代码更加有序的组织在一起。
 
@@ -1104,15 +1094,15 @@ npm run dev
 
 
 
-# 五、新的组件
+## 五、新的组件
 
-## 1.Fragment
+### 1.Fragment
 
 - 在Vue2中: 组件必须有一个根标签
 - 在Vue3中: 组件可以没有根标签, 内部会将多个标签包含在一个Fragment虚拟元素中
 - 好处: 减少标签层级, 减小内存占用
 
-## 2.Teleport
+### 2.Teleport
 
 - 什么是Teleport？—— `Teleport` 是一种能够将我们的<strong style="color:#DD5145">组件html结构</strong>移动到指定位置的技术。
 
@@ -1127,7 +1117,7 @@ npm run dev
   </teleport>
   ```
 
-## 3.Suspense
+### 3.Suspense
 
 - 等待异步组件时渲染一些额外内容，让应用有更好的用户体验
 
@@ -1164,9 +1154,9 @@ npm run dev
     </template>
     ```
 
-# 六、其他
+## 六、其他
 
-## 1.全局API的转移
+### 1.全局API的转移
 
 - Vue 2.x 有许多全局 API 和配置。
 
@@ -1201,7 +1191,7 @@ npm run dev
     | Vue.use                   | app.use                                     |
     | Vue.prototype             | app.config.globalProperties                 |
 
-## 2.其他改变
+### 2.其他改变
 
 - data选项应始终被声明为一个函数。
 
@@ -1263,8 +1253,8 @@ npm run dev
 
 - ......
 
-# vue3 setup语法糖
+## vue3 setup语法糖
 
-# vue3源码分析
+## vue3源码分析
 
-# 常见面试题
+## 常见问题

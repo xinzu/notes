@@ -1,4 +1,4 @@
-# 入口文件
+## 入口文件
 
 **AppRegistry**
 
@@ -16,11 +16,11 @@ AppRegistry.registerComponent('Appname', () => App);
 
 
 
-# RN组件
+## RN组件
 
-## 基础组件
+### 基础组件
 
-### View
+#### View
 
 > 一个支持Flexbox布局、样式、触摸处理、无障碍功能的容器
 >
@@ -41,7 +41,7 @@ AppRegistry.registerComponent('Appname', () => App);
 </TouchableOpacity>
 ````
 
-### Text
+#### Text
 
 > 一个用于显示文本的组件，支持嵌套、样式、触摸处理
 >
@@ -49,27 +49,27 @@ AppRegistry.registerComponent('Appname', () => App);
 >
 > **特别注意**：RN中的每个文本节点都必须使用Text组件来包裹
 
-### Image
+#### Image
 
-### TextInput
+#### TextInput
 
-### ScrollView
+#### ScrollView
 
-### StyleSheet
+#### StyleSheet
 
-## 交互控件
+### 交互控件
 
-### StatusBar
+#### StatusBar
 
 > 控制应用状态栏的组件。
 >
 > 常见用法：防止APP标题被覆盖，通过StatusBar.currentHeight赋值给title的padding-top
 
-### SafeAreaView
+#### SafeAreaView
 
 > SafeAreaView的目的是在一个“安全”的可视区域内渲染内容。具体来说就是因为目前有 iPhone X 这样的带有“刘海”的全面屏设备，所以需要避免内容渲染到不可见的“刘海”范围内。本组件目前仅支持 iOS 设备以及 iOS 11 或更高版本。
 
-### PanResponder
+#### PanResponder
 
 > 提供了一个对[触摸响应系统](https://reactnative.cn/docs/0.44/gesture-responder-system.html)响应器的可预测的包装。
 
@@ -113,7 +113,7 @@ this._panResponder = PanResponder.create({
   }
 ```
 
-### Dimensions
+#### Dimensions
 
 > 本模块用于获取设备屏幕的宽高
 >
@@ -124,7 +124,7 @@ this._panResponder = PanResponder.create({
 > // const { width, height } = Dimensions.get("window");
 > ````
 
-### Platform
+#### Platform
 
 > 本模块用于检测当前运行平台
 >
@@ -147,11 +147,11 @@ this._panResponder = PanResponder.create({
 > });
 > ````
 
-### PermissionsAndroid
+#### PermissionsAndroid
 
 > `PermissionsAndroid` 可以访问 Android M(也就是 6.0)开始提供的权限模型。有一些权限写在`AndroidManifest.xml`就可以在安装时自动获得，但有一些“危险”的权限则需要弹出提示框供用户选择。、
 
-# RN项目基本所需库
+## RN项目基本所需库
 
 -  全局状态管理器，解决组件数据通信问题。
 - [fetch](https://link.zhihu.com/?target=https%3A//developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 与后端通信`ajax`在这里推荐最新版的api`fetch`。
@@ -162,11 +162,9 @@ this._panResponder = PanResponder.create({
 - [react-native-debugger](https://link.zhihu.com/?target=https%3A//github.com/jhen0409/react-native-debugger) 对react-native程序的桌面调试工具。
 - [react-native-config](https://link.zhihu.com/?target=https%3A//github.com/luggit/react-native-config) 解决不同环境(开发、测试、正式)变量配置。
 
-# 模块API
+## 模块API
 
-
-
-## AsyncStorage
+### AsyncStorage
 
 > `AsyncStorage`是一个简单的、异步的、持久化的 Key-Value 存储系统，它对于 App 来说是全局性的。可用来代替 LocalStorage。
 
@@ -223,9 +221,9 @@ AsyncStorage.setItem(
 
 
 
-# 插件mobx-react
+## 插件mobx-react
 
-## **环境配置**
+### 环境配置
 
 1. **安装**
 
@@ -243,11 +241,10 @@ AsyncStorage.setItem(
    }
    ````
 
-   
 
-## **核心内容**
+### 核心内容
 
-### **@observable**
+#### @observable
 
 **被观察者，store**
 
@@ -268,7 +265,7 @@ const test = new TestStore()
 export default test
 ````
 
-### **@inject & @observer**
+#### @inject & @observer
 
 **在模块内用`@inject("Store")`，将Store注入到props上，通过this.props.Store.xxx获取值**
 
@@ -291,9 +288,7 @@ class App extends Component {
 export default App;
 ````
 
-
-
-### **@computed**
+#### @computed
 
 **@computed getter**
 
@@ -303,7 +298,7 @@ export default App;
 }
 ````
 
-### **@action**
+#### @action
 
 **在Store中定义，在模块中通过this.props.xxx()调用**
 
@@ -352,7 +347,7 @@ changeName = name => {
    })
    ````
 
-# 插件react-native-amap3d
+## 插件react-native-amap3d
 
 > react-native 高德地图组件，支持 Android + iOS
 
@@ -360,7 +355,7 @@ changeName = name => {
 
 [参数说明](https://qiuxiang.github.io/react-native-amap3d/api/interfaces/mapviewprops.html#center)
 
-## MapView
+### MapView
 
 > 地图模块
 
@@ -380,7 +375,7 @@ changeName = name => {
 
   图）、Standard（标准地图）、Navi（导航地图）、Satellite（卫星地图）
 
-## Maker
+### Maker
 
 > 地图标记点
 
@@ -404,13 +399,13 @@ changeName = name => {
 
   > 当组件更新时，如果组件的 `props` 和 `state` 都没发生改变， `render` 方法就不会触发
 
-# 插件react-native-vector-icons
+## 插件react-native-vector-icons
 
 > 一个图标组件库，icons
 
 [图标库查看地址](https://oblador.github.io/react-native-vector-icons/)
 
-## **使用方法**
+### 使用方法
 
 1.  在工程目录下通过npm安装react-native-vector-icons
 
@@ -434,21 +429,21 @@ changeName = name => {
    - `name`：默认None，图标name，必须
    - `color`：默认Inherited，图标颜色
 
-# react-navigation-----路由管理
+## react-navigation-----路由管理
 
-## 安装
+### 安装
 
 ```
 npm install --save react-navigation
 ```
 
-## 三种导航方式
+### 三种导航方式
 
 - `StackNavigator` - 为应用程序提供了一种页面切换的方法，每次切换时，新的页面会放置在堆栈的顶部
 - `TabNavigator` - 用于设置具有多个Tab页的页面
 - `DrawerNavigator` - 用于设置抽屉导航的页面
 
-### StackNavigator
+#### StackNavigator
 
 创建一个`StackNavigator`。
 
@@ -571,11 +566,11 @@ createStackNavigator(RouteConfigs, StackNavigatorConfig):
   - gestureResponseDistance: 定义滑动返回的有效距离，水平状态下默认：25，垂直状态默认135；
   - gestureDirection: 设置关闭手势的方向。默认从左向右，可以设置从右到左的滑动操作。
 
-### TabNavigator
+#### TabNavigator
 
 > 最常见的底部选卡的路由方式
 
-### DrawerNavigator
+#### DrawerNavigator
 
 > 从侧边栏划出，默认左侧划出
 
@@ -609,11 +604,11 @@ const AppContainer = createAppContainer(
 <Button onPress={ () => navigation.openDrawer() } title='打开抽屉' />
 ```
 
-# 一些知识点
+## 一些其他知识点
 
-## 样式的继承与优先级
+### 样式的继承与优先级
 
 1. Text内的文字不会继承View的文字样式
 2. 右侧优先级最高
 
-## Flexbox布局
+### Flexbox布局
