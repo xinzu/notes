@@ -2,6 +2,8 @@
 
 // TODO
 
+**https://www.lilichao.com/**
+
 ## **一些问题**
 
 ### 为什么要在`componentDidMount`中获取数据？
@@ -10,7 +12,21 @@
 
 ### 你真的理解`setState`吗？
 
+setState放在异步函数中，如果用setState(count+1)这种形式，触发多次只会执行一次；要改为setState(count => count + 1)
+
 ### `setState`什么时候是异步/同步的？
+
+![image-20230201103604483](/imgs/react/image-20230201103604483.png)
+
+- **react18**
+
+  setState 和 useState的区别
+  相同点：执行多个set（相同/不同都可以）时只执行一次render；同步和异步render执行次数和结果都是一样的
+  不同点：setState只执行最后一次setState，useState每次都会执行（比如同一个state.a=0执行两次++，setState最后返回的是1，useState返回的是2）
+
+- **react18之前**
+
+  在异步函数中是同步的，在同步函数中是异步的
 
 ## 多页面配置
 
@@ -284,6 +300,10 @@
 
 #### refs
 
+**获取元素的真实DOM对象。**
+
+> 尽量减少在React中操作原生的DOM对象，如果实在非得操作也尽量是那些不会对数据产生影响的操作，像是设置焦点、读取信息等。
+
 ​	定义ref的三种方式
 
 1. ```
@@ -509,6 +529,8 @@ https://react.docschina.org/docs/context.html#reactcreatecontext
 1. 在组件树中，如果中间某一个组件 ShouldComponentUpdate中 return false ，会阻碍 context 的正常传值，导致子组件无法获取更新。
 2. 组件本身 extends React.PureComponent 也会阻碍 context 的更新。
 
+> ​	PureComponent会对`props`和`state`进行浅比较，跳过不必要的更新，提高组件性能。
+
 ```
 // context在如下的生命周期钩子中可以使用
 constructor(props, context)
@@ -516,17 +538,6 @@ componentWillReceiveProps(nextProps, nextContext)
 shouldComponentUpdate(nextProps, nextState, nextContext)
 componentWillUpdate(nextProps, nextState, nextContext)
 componentDidUpdate(prevProps, prevState, prevContext)
-
-// 在无状态组件中可以通过参数传入
-function D(props, context) {
-  return (
-    <div>{this.context.user.name}</div>
-  );
-}
-
-D.contextTypes = {
-  user: React.PropTypes.object.isRequired
-}
 ```
 
 - 老版本的context
@@ -758,7 +769,7 @@ this.handleClick = this.handleClick.bind(this);
 <button onClick={() => this.handleClick()}>
 ```
 
-#### 函数定义使用箭头函数
+##### 函数定义使用箭头函数
 
 ```
 // render
@@ -778,6 +789,41 @@ handleClick = () => {
 #### 合成事件
 
 #### 原生事件
+
+## protal
+
+通过ReactDOM中的createPortal()方法，可以在渲染元素时将元素渲染到网页中的指定位置
+
+**使用情况**
+
+> 需要在React中添加一个会盖住其他元素的Backdrop组件，Backdrop显示后，页面中所有的元素都会被遮盖。很显然这里需要用到定位，但是如果将遮罩层直接在当前组件中渲染的话，遮罩层会成为当前组件的后代元素。如果此时，当前元素后边的兄弟元素中有开启定位的情况出现，且层级不低于当前元素时，便会出现盖住遮罩层的情况。
+
+```
+const backdropDOM = document.getElementById('backdrop');
+
+const Backdrop = () => {
+  return ReactDOM.createPortal(
+  <div
+           style={
+      {
+        position:'fixed',
+        top:0,
+        bottom:0,
+        left:0,
+        right:0,
+        zIndex:9999,
+        background:'rgba(0,0,0,.3)'
+      }
+    }
+           >
+  </div>,
+      backdropDOM
+  );
+};
+// Backdrop会直接渲染到网页中id为backdrop的div中
+```
+
+
 
 ## 全家桶
 
@@ -992,6 +1038,73 @@ this.props.location.state
 
 > 加载history中下一个的URL
 
+### Router6
+
+#### 钩子函数
+
+###### useNavigate
+
+> 编程式的路由跳转
+
+```
+navigate(pathname[,{replace: true, state: xxx}])
+// pathname: 跳转路径
+// pathname?key=value: search方式传参
+// pathname/value: params方式传参，需要修改路由的path为'/login/:key'
+// replace: true history.replceState，不设置时默认为history.pushState
+// state: 传递state参数
+```
+
+```
+function App() {
+	const navigate = useNavigate();
+	
+	const jumpLogin = () => {
+		navigate('/login')
+	}
+	
+	return (
+		<div>
+			<button onClick={jumpLogin}></button>
+		</div>
+	)
+}
+```
+
+###### useParams
+
+> 获取params参数
+
+```
+const params = useParams()
+console.log(params.key)
+```
+
+###### useSearchParams
+
+> 获取search参数
+
+```
+const [search, setsearch] = useSearchParams()
+console.log(search.get('name'))
+console.log(search.get('age'))
+```
+
+###### useLocation
+
+> 获取state参数
+
+```
+const state = useLocation()
+console.log(state)
+```
+
+
+
+###### useRoutes
+
+
+
 ### Redux
 
 **Redux中的Store修改之后，React不会自动监听，也就是说页面不会重新渲染，需要手动进行监听**
@@ -1099,11 +1212,102 @@ let mapDispatchToprops = {
 }
 ```
 
-#### mobx-redux
+#### Redux-toolkit  (RTK)
+
+```
+npm i @reduxjs/toolkit
+```
+
+```
+import { createSlice } from '@reduxjs/toolkit';
+
+export const counterSlice = createSlice({
+ 	name: 'counter', // 命名空间，在调用action的时候会默认的设置为action的前缀
+ 	// 初始值
+ 	initialState: {
+ 		count: 1,
+ 		title: 'redux toolkit pre',
+  	},
+     // 这里的属性会自动的导出为actions，在组件中可以直接通过dispatch进行触发
+     reducers: {
+        increment(state, { payload }) {
+            state.count = state.count + payload.step; // 内置了immutable
+        },
+        decrement(state) {
+            state.count -= 1;
+        },
+      },
+});
+
+// 导出actions
+export const { increment, decrement } = counterSlice.actions;
+
+// 内置了thunk插件，可以直接处理异步请求
+export const asyncIncrement = (payload) => (dispatch) => {
+     setTimeout(() => {
+     dispatch(increment(payload));
+      }, 2000);
+};
+
+export default counterSlice.reducer; // 导出reducer，在创建store时使用到
+```
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import './index.css';
+import App from './App';
+import store from './store';
+
+ReactDOM.render(
+	<Provider store={store}>
+ 		<App />
+	</Provider>,
+ 	document.getElementById('root')
+);
+在组件内部，使用useState和useDispatch可以直接获取state数据与dispatch方法
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, asyncIncrement } from './store/features/counterSlice'; // 引入actions
+
+function App() {
+     const { count } = useSelector((state) => state.counter);
+     const dispatch = useDispatch();
+     return (
+         <div className='App'>
+             <button
+                 onClick={() => {
+                    dispatch(increment({ step: 2 })); // dispatch派发action
+                 }}
+             >
+                {count}
+             </button>
+            <hr />
+             <button
+                onClick={() => {
+                    dispatch(asyncIncrement({ step: 1 }));
+                }}
+              >
+                  {count}
+              </button>
+        </div>
+  );
+}
+
+export default App;
+```
+
+
+
+#### Mobx-redux
 
 ## reactHooks
 
 > 在函数组件中使用state，生命周期
+
+- 只能用于函数组件或自定义的钩子函数中
+- 只能直接在函数组件中使用，函数组件的方法中不行
 
 ### 常用Hooks
 
@@ -1127,56 +1331,150 @@ let mapDispatchToprops = {
 
 `useEffect(didUpdate);`
 
+> *Effect Hook* 可以让你在函数组件中执行副作用操作
+
 > 在函数组件主体内（这里指在 React 渲染阶段）改变 DOM、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏 UI 的一致性。
 
-##### 清除Effect
+副作用操作的例子：
+
+![image-20230201153745912](imgs/react/react-副作用.png)
+
+```
+const ThemeContext = React.createContext({
+  theme: 'dark',
+  toggle: () => {}, //向上下文设定一个回调方法
+  clear: () => {}
+});
+
+function App() {
+	const [theme, setTheme] = useState('dark');
+	const toggle = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+	const clear = () => setTheme('');
+	return (
+		<ThemeContext.Provider value={{theme, toggle, clear}}>
+            <Content />
+          </ThemeContext.Provider>
+    );
+}
+
+function Content() {
+    const {toggle, clear, theme} = useContext(ThemeContext);
+    const [count, setCount] = useState(0);
+    if (!theme) setCount(1);
+    return (
+    	<Fragment>
+    		<button onClick={toggle}>修改theme</button>
+    		<button onClick={clear}>清空theme</button>
+    	</Fragment>
+    )
+}
+
+// 当theme被清空时，调用了setCount，再一次触发了重新渲染，会重新进入if判断，导致死循环
+```
+
+##### 可以作为类似于生命周期使用
+
+- 第一个参数：函数，该函数内的逻辑视为`componentDidMount`；如果该函数有函数返回值，视为`componentWillUnmount`
 
 ```
 // useEffect返回一个清除函数
 useEffect(() => {
+  // componentDidMount 
   const subscription = props.source.subscribe();
   return () => {
-    // 清除订阅
+    // componentWillUnmount
     subscription.unsubscribe();
   };
 });
 ```
 
-##### 第二个参数
+- 第二个参数
 
-1. 没有第二个参数
+1. 没有第二个参数：组件的初始化和更新都会执行
 
-   组件的初始化和更新都会执行
+   ```
+   useEffect(() => {
+     // componentDidMount componentDidUpdate
+     // ...
+   });
+   ```
 
-2. 空数组
+2. 空数组：初始化调用一次之后不再执行，相当于componentDidMount
 
-   初始化调用一次之后不再执行，相当于componentDidMount
+   ```
+   // 解决上面的副作用
+   // ...
+   function Content() {
+       const {
+           toggle, clear, theme 
+       } = useContext(ThemeContext);
+       const [count, setCount] = useState(0);
+       useEffect(() => {
+           console.log('useEffect', count)
+           if (!theme) setCount(1);
+       });
+       // ...
+   }
+   ```
 
-3. 有一个值
+   
 
-   只有该值有变化时执行
+3. 有一个值：初始化时和该值改变时会执行，相当于componentDidMount，componentDidUpdate
 
-4. 有多个值
-
-   对比每个值，有一个有变化时执行
-
-##### useLayoutEffect
-
-> 其函数签名与 `useEffect` 相同，但它会在所有的 DOM 变更之后同步调用 effect。可以使用它来读取 DOM 布局并同步触发重渲染。在浏览器执行绘制之前，`useLayoutEffect` 内部的更新计划将被同步刷新。
->
-> 尽可能使用标准的 `useEffect` 以避免阻塞视觉更新。
+4. 有多个值：对比每个值，其中一个有变化时执行
 
 #### useRef
 
 `const refContainer = useRef(initialValue);`
 
-和createRef其实是一样的
+##### 和createRef的区别
 
-##### forwardRef
+- createRef会在组件每次渲染的时候重新创建
+- useRef只会在组件首次渲染时创建
+
+##### 作用于普通组件时
+
+作用于普通组件时，与createRef的用法是一样的
+
+```
+import { Input, Button } from 'antd';
+import { useRef, createRef } from 'react';
+
+import type { InputRef } from 'antd';
+
+const RefDemo = () => {
+  const inputEL = useRef<InputRef>(null);
+  const inputEL2 = useRef<HTMLInputElement>(null);
+  const inputEL3 = createRef<HTMLInputElement>();
+
+  const getInput = () => {
+    console.log('antd DOM', inputEL.current?.input?.value);
+    console.log('原生 DOM', inputEL2.current?.value);
+    console.log('createRef', inputEL3.current?.value);
+  };
+
+  return (
+    <div>
+      <p>antd Input：<Input ref={inputEL} style={{width: 167}} /></p>
+      <p>原生 Input：<input type="text" ref={inputEL2} /></p>
+      <p>createRef Input：<input type="text" ref={inputEL3} /></p>
+      <p><Button onClick={getInput}>获取Input Value</Button></p>
+    </div>
+  );
+};
+
+export default RefDemo;
+```
+
+##### 调用子组件的方法/获取子组件
+
+需要用到两个方法 `useImperativeHandle` 和 `forwardRef`
+
+###### `forwardRef`
 
 > 引用传递（Ref forwading）是一种通过组件向子组件自动传递 **引用ref** 的技术。对于应用者的大多数组件来说没什么作用。但是对于有些重复使用的组件，可能有用。例如某些input组件，需要控制其focus，本来是可以使用ref来控制，但是因为该input已被包裹在组件中，这时就需要使用Ref forward来透过组件获得该input的引用。
 
-##### useImperativeHandle
+###### `useImperativeHandle`
 
 > useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值。
 >
@@ -1187,6 +1485,7 @@ useEffect(() => {
 `useImperativeHandle(ref, createHandle, [deps])`
 
 ```
+// 调用子组件的方法
 import React, { useRef, useImperativeHandle,forwardRef } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -1217,18 +1516,146 @@ const App = props => {
 ReactDOM.render(<App />, root);
 ```
 
+```
+// 获取子组件
+import React, { useRef,forwardRef } from 'react';
+import ReactDOM from 'react-dom';
+
+const FancyInput = forwardRef((props, ref) => (
+	<input ref={ref} type="text" value={props.children}/>
+));
+
+const App = props => {
+  const fancyInputRef = useRef();
+
+  return (
+    <div>
+      <FancyInput ref={fancyInputRef}>hhtest</FancyInput>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, root);
+```
+
 
 
 ### 其他Hooks
 
 #### useReducer
 
-#### useCallback
+[useState](#useState)的替代方案，在某些场景下，`useReducer` 会比 `useState` 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等。并且，使用 `useReducer` 还能给那些会触发深更新的组件做性能优化，因为你可以向子组件传递 `dispatch` 而不是回调函数 。
+
+使用：
+
+```
+import {useReducer} from 'react';
+
+function App() {
+    const reducer = (state, action) => {
+        switch(action.type){
+            case 'add':
+                return state + 1;
+            case 'sub':
+                return state - 1;
+        }
+    };
+    
+    const [count, countDispath] = useReducer(reducer, 1);
+    
+    return (
+        <div className="App">
+            {count}
+            <div>
+                <button onClick={()=>countDispath({type:'sub'})}>-</button>
+                <button onClick={()=>countDispath({type:'add'})}>+</button>
+            </div>
+        </div>
+    );
+}
+```
 
 #### useMemo
 
+```
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+##### React.memo
+
+减少不必要的重新渲染，比如App->A->B，当App重新渲染时，A和B都会重新渲染。但B组件没有state、context、props，没有必要每次都重新渲染，此时可以用到`React.memo`方法
+
+在B组件中使用，`React.memo(B)`
+
+**useMemo和[useCallback](#useCallback)作用和用法是一样的**
+
+#### useCallback
+
+用来创建React中的回调函数，该回调函数仅在某个依赖项改变时才会更新
+
+`useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`。
+
+- 第二个参数：不指定时，每次都会更新；指定时，其中某个变化时才会更新
+
+```
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+可以解决[React.memo](#React.memo)的遗留问题，如果B组件中某个按钮点击触发了A组件的事件，A组件更新时，B组件仍然会更新
+
+##### useMemo、useCallback的区别
+
+- useCallback 和 useMemo 的区别
+
+​	`useCallback`返回一个函数，当把它返回的这个函数作为子组件使用时，可以避免每次父组件更新时都重新渲染这个子组件；`seMemo`返回的的是一个值，用于避免在每次渲染时都进行高开销的计算。
+
+- 什么时候用`useCallback`、`useMemo`
+- 任何时候都用是一个好的习惯，但是大部分时间不用也没什么大问题。但是如果该函数或变量作为 props 传给子组件，请一定要用，避免子组件的非必要渲染
+
 #### useContext
 
-​	如果需要在组件之间共享状态，可以使用useContext()。和[Context](#context对象)一样
+​	如果需要在组件之间共享状态，可以使用useContext()。和[Context.Consumer](#context对象)一样
+
+```
+//接收组件
+function Button() {
+	const {theme, toggle} = useContext(ThemeContext);
+  	return (
+        <button
+          onClick={toggle} //调用回调
+          style={{backgroundColor: theme}}
+        >
+          Toggle Theme
+        </button>
+  	);
+}
+
+
+// Context.Consumer
+//接收组件
+function Button() {
+  return (
+    <ThemeContext.Consumer>
+      {({theme, toggle}) => (
+        <button
+          onClick={toggle} //调用回调
+          style={{backgroundColor: theme}}>
+          Toggle Theme
+        </button>
+      )}
+    </ThemeContext.Consumer>
+  );
+}
+```
+
+
 
 ## 源码分析
+
+[#userState]: 
+[#useState]: 
