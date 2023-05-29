@@ -8,7 +8,7 @@
     
     <meta name="description" content="">
     
-    <link rel="preload" href="/notes/assets/css/0.styles.aa6162e3.css" as="style"><link rel="preload" href="/notes/assets/js/app.6958b4e4.js" as="script"><link rel="preload" href="/notes/assets/js/2.8cb80252.js" as="script"><link rel="preload" href="/notes/assets/js/12.45505ec0.js" as="script"><link rel="prefetch" href="/notes/assets/js/10.3058cf05.js"><link rel="prefetch" href="/notes/assets/js/11.e760b075.js"><link rel="prefetch" href="/notes/assets/js/13.9758f9dd.js"><link rel="prefetch" href="/notes/assets/js/14.10636a4f.js"><link rel="prefetch" href="/notes/assets/js/15.a63524c7.js"><link rel="prefetch" href="/notes/assets/js/16.7f914148.js"><link rel="prefetch" href="/notes/assets/js/17.e5a32931.js"><link rel="prefetch" href="/notes/assets/js/18.771f4ace.js"><link rel="prefetch" href="/notes/assets/js/19.e41cae94.js"><link rel="prefetch" href="/notes/assets/js/20.afd8a57a.js"><link rel="prefetch" href="/notes/assets/js/21.d8aefa2d.js"><link rel="prefetch" href="/notes/assets/js/22.91a7ea1b.js"><link rel="prefetch" href="/notes/assets/js/23.2fb66ca3.js"><link rel="prefetch" href="/notes/assets/js/24.3d3b58b6.js"><link rel="prefetch" href="/notes/assets/js/3.a1bb1a2f.js"><link rel="prefetch" href="/notes/assets/js/4.b7d0708f.js"><link rel="prefetch" href="/notes/assets/js/5.9e2f4ca7.js"><link rel="prefetch" href="/notes/assets/js/6.c7b54f12.js"><link rel="prefetch" href="/notes/assets/js/7.03139e79.js"><link rel="prefetch" href="/notes/assets/js/8.547b5cb4.js"><link rel="prefetch" href="/notes/assets/js/9.1de6ed85.js">
+    <link rel="preload" href="/notes/assets/css/0.styles.aa6162e3.css" as="style"><link rel="preload" href="/notes/assets/js/app.ccf3b7ff.js" as="script"><link rel="preload" href="/notes/assets/js/2.8cb80252.js" as="script"><link rel="preload" href="/notes/assets/js/12.aa7a46be.js" as="script"><link rel="prefetch" href="/notes/assets/js/10.14384423.js"><link rel="prefetch" href="/notes/assets/js/11.50e54e3b.js"><link rel="prefetch" href="/notes/assets/js/13.848ee941.js"><link rel="prefetch" href="/notes/assets/js/14.9beea031.js"><link rel="prefetch" href="/notes/assets/js/15.eedb89fc.js"><link rel="prefetch" href="/notes/assets/js/16.da882a45.js"><link rel="prefetch" href="/notes/assets/js/17.36854cc3.js"><link rel="prefetch" href="/notes/assets/js/18.9cd309c0.js"><link rel="prefetch" href="/notes/assets/js/19.e41cae94.js"><link rel="prefetch" href="/notes/assets/js/20.aa962834.js"><link rel="prefetch" href="/notes/assets/js/21.d8aefa2d.js"><link rel="prefetch" href="/notes/assets/js/22.91a7ea1b.js"><link rel="prefetch" href="/notes/assets/js/23.2fb66ca3.js"><link rel="prefetch" href="/notes/assets/js/24.3d3b58b6.js"><link rel="prefetch" href="/notes/assets/js/3.a1bb1a2f.js"><link rel="prefetch" href="/notes/assets/js/4.b7d0708f.js"><link rel="prefetch" href="/notes/assets/js/5.9e2f4ca7.js"><link rel="prefetch" href="/notes/assets/js/6.c7b54f12.js"><link rel="prefetch" href="/notes/assets/js/7.03139e79.js"><link rel="prefetch" href="/notes/assets/js/8.b368245f.js"><link rel="prefetch" href="/notes/assets/js/9.e89f27f1.js">
     <link rel="stylesheet" href="/notes/assets/css/0.styles.aa6162e3.css">
   </head>
   <body>
@@ -529,7 +529,81 @@ console.log(search.get('name'))
 console.log(search.get('age'))
 </code></pre></div><h6 id="uselocation"><a href="#uselocation" class="header-anchor">#</a> useLocation</h6> <blockquote><p>获取state参数</p></blockquote> <div class="language- extra-class"><pre class="language-text"><code>const state = useLocation()
 console.log(state)
-</code></pre></div><h6 id="useroutes"><a href="#useroutes" class="header-anchor">#</a> useRoutes</h6> <h3 id="redux-2"><a href="#redux-2" class="header-anchor">#</a> Redux</h3> <p><strong>Redux中的Store修改之后，React不会自动监听，也就是说页面不会重新渲染，需要手动进行监听</strong></p> <div class="language- extra-class"><pre class="language-text"><code>一般在最外层父组件中进行监听
+</code></pre></div><h6 id="useroutes"><a href="#useroutes" class="header-anchor">#</a> useRoutes</h6> <ul><li><p>路由配置</p> <div class="language- extra-class"><pre class="language-text"><code>import { Navigate } from 'react-router-dom';
+import { lazy } from 'react';
+
+import Home from '@/views/campus';
+
+const handleLazy = (name: string) =&gt; {
+    const Comp = lazy(() =&gt; import(`@/views/${name}`));
+    return &lt;Comp /&gt;; //element需要传入&lt;Element /&gt;这种形式，与component不同
+};
+
+const routes = [
+    {
+        path: '/',
+        element: &lt;Home /&gt;,
+        children: [
+            {
+                path: '',
+                element: handleLazy('overview')
+            },
+            {
+                path: 'overview',
+                element: handleLazy('overview')
+            },
+            {
+                path: 'comprehensive',
+                element: handleLazy('comprehensive')
+            }
+        ]
+    },
+    {
+        path: '/login',
+        element: handleLazy('login')
+    },
+    {
+        path: '/404',
+        element: handleLazy('404')
+    },
+    {
+        path: '*',
+        element: &lt;Navigate to='/404' /&gt;
+    }
+];
+
+export default routes;
+</code></pre></div></li> <li><p>路由使用</p> <div class="language- extra-class"><pre class="language-text"><code>function App() {
+    const DRouter = useRoutes(DefaultRouter);
+    return (
+        &lt;Fragment&gt;
+            {DRouter}
+        &lt;/Fragment&gt;
+    )
+}
+
+// 二级路由 &lt;Outlet&gt;&lt;/Outlet&gt;
+import { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
+
+import layoutStyle from './index.module.scss';
+
+import Menu from './menu';
+import Side from './side';
+
+function Layout() {
+    return (
+        &lt;div className={layoutStyle.layout}&gt;
+            {/* 图表 */}
+            &lt;Side&gt;
+                &lt;Suspense fallback={&lt;h2&gt;Loading..&lt;/h2&gt;}&gt;&lt;Outlet /&gt;&lt;/Suspense&gt;
+            &lt;/Side&gt;
+            {/* 菜单 */}
+            &lt;Menu /&gt;
+        &lt;/div&gt;
+    )
+}
+</code></pre></div></li></ul> <h3 id="redux-2"><a href="#redux-2" class="header-anchor">#</a> Redux</h3> <p><strong>Redux中的Store修改之后，React不会自动监听，也就是说页面不会重新渲染，需要手动进行监听</strong></p> <div class="language- extra-class"><pre class="language-text"><code>一般在最外层父组件中进行监听
 componentDidMount(){
 	store.subscribe(()=&gt;{
 		this.setState({})
@@ -838,7 +912,7 @@ function Button() {
   	);
 }
 
-
+// 等价于
 // Context.Consumer
 //接收组件
 function Button() {
@@ -863,6 +937,6 @@ function Button() {
       </a>
       →
     </span></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/notes/assets/js/app.6958b4e4.js" defer></script><script src="/notes/assets/js/2.8cb80252.js" defer></script><script src="/notes/assets/js/12.45505ec0.js" defer></script>
+    <script src="/notes/assets/js/app.ccf3b7ff.js" defer></script><script src="/notes/assets/js/2.8cb80252.js" defer></script><script src="/notes/assets/js/12.aa7a46be.js" defer></script>
   </body>
 </html>
