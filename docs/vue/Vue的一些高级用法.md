@@ -91,3 +91,4 @@ creatInterval(msg) {
 }
 ```
 
+#### ？？vue3删掉了$once，怎么实现这种优化

@@ -1099,11 +1099,93 @@ const state = useLocation()
 console.log(state)
 ```
 
-
-
 ###### useRoutes
 
+- 路由配置
 
+  ```
+  import { Navigate } from 'react-router-dom';
+  import { lazy } from 'react';
+  
+  import Home from '@/views/campus';
+  
+  const handleLazy = (name: string) => {
+      const Comp = lazy(() => import(`@/views/${name}`));
+      return <Comp />; //element需要传入<Element />这种形式，与component不同
+  };
+  
+  const routes = [
+      {
+          path: '/',
+          element: <Home />,
+          children: [
+              {
+                  path: '',
+                  element: handleLazy('overview')
+              },
+              {
+                  path: 'overview',
+                  element: handleLazy('overview')
+              },
+              {
+                  path: 'comprehensive',
+                  element: handleLazy('comprehensive')
+              }
+          ]
+      },
+      {
+          path: '/login',
+          element: handleLazy('login')
+      },
+      {
+          path: '/404',
+          element: handleLazy('404')
+      },
+      {
+          path: '*',
+          element: <Navigate to='/404' />
+      }
+  ];
+  
+  export default routes;
+  ```
+
+- 路由使用
+
+  ```
+  function App() {
+      const DRouter = useRoutes(DefaultRouter);
+      return (
+          <Fragment>
+              {DRouter}
+          </Fragment>
+      )
+  }
+  
+  // 二级路由 <Outlet></Outlet>
+  import { Suspense } from 'react';
+  import { Outlet } from 'react-router-dom';
+  
+  import layoutStyle from './index.module.scss';
+  
+  import Menu from './menu';
+  import Side from './side';
+  
+  function Layout() {
+      return (
+          <div className={layoutStyle.layout}>
+              {/* 图表 */}
+              <Side>
+                  <Suspense fallback={<h2>Loading..</h2>}><Outlet /></Suspense>
+              </Side>
+              {/* 菜单 */}
+              <Menu />
+          </div>
+      )
+  }
+  ```
+
+  
 
 ### Redux
 
@@ -1635,7 +1717,7 @@ function Button() {
   	);
 }
 
-
+// 等价于
 // Context.Consumer
 //接收组件
 function Button() {
