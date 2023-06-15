@@ -16,7 +16,7 @@ setState放在异步函数中，如果用setState(count+1)这种形式，触发�
 
 ### `setState`什么时候是异步/同步的？
 
-![image-20230201103604483](/imgs/react/image-20230201103604483.png)
+![image-20230201103604483](/notes/imgs/react/image-20230201103604483.png)
 
 - **react18**
 
@@ -270,7 +270,7 @@ setState放在异步函数中，如果用setState(count+1)这种形式，触发�
    
 8. 数据是一个数组时，React可以拿到值进行展示，但如果是一个对象，只能拿到key值，无法进行展示
 
-   ![image-20210322141300829](/imgs/react/object无法作为child.png)
+   ![image-20210322141300829](/notes/imgs/react/object无法作为child.png)
 
 
 ### 三大核心属性
@@ -421,7 +421,7 @@ constructor就可以拿到refs和定义的事件
 
 #### **钩子函数调用顺序**
 
-![react生命周期](/imgs/react/react生命周期.png)
+![react生命周期](/notes/imgs/react/react生命周期.png)
 
 #### 手动调用
 
@@ -500,17 +500,17 @@ ReactDOM.render(<Welcome name='react' />, document.getElementById('root'));
 
 - 父->子：props
 
-  ![父传子](/imgs/react/父传子.jpg)
+  ![父传子](/notes/imgs/react/父传子.jpg)
 
 - 子->父：父组件将一个函数作为props传给子组件，子组件通过this.props.xxx(args)传值，与vue中的$emit类似
 
-  ![子传父](/imgs/react/子传父.jpg)
+  ![子传父](/notes/imgs/react/子传父.jpg)
 
 ##### 兄弟
 
 兄弟组件之间的传值，是通过父组件做的中转 ，流程为：**组件A** -- `传值` --> **父组件** -- `传值` --> **组件B**
 
-![兄弟组件传值](/imgs/react/兄弟组件传值.jpg)
+![兄弟组件传值](/notes/imgs/react/兄弟组件传值.jpg)
 
 ##### 跨级
 
@@ -965,7 +965,7 @@ class Nav extends React.Component {
 export default withRouter(Nav);
 ```
 
-![image-20201221104523737](/imgs/react/image-20201221104523737.png)
+![image-20201221104523737](/notes/imgs/react/image-20201221104523737.png)
 
 #### 路由组件传参
 
@@ -1211,7 +1211,7 @@ store = createStore(reducer)
 
 ##### store
 
-![image-20201222150802906](/imgs/react/image-20201222150802906.png)
+![image-20201222150802906](/notes/imgs/react/image-20201222150802906.png)
 
 ##### action
 

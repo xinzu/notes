@@ -127,7 +127,7 @@ let vm = new Vue({
 
 ###### 一般钩子
 
-![vue生命周期](/imgs/vue/vue生命周期.jpg)
+![vue生命周期](/notes/imgs/vue/vue生命周期.jpg)
 
 ###### activated/deactivated
 

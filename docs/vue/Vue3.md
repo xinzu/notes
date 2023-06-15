@@ -885,7 +885,7 @@ npm run dev
   ```
 
 ### 8.生命周期
-![vue3生命周期](/imgs/vue/vue3lifecycle.png)
+![vue3生命周期](/notes/img//vue3lifecycle.png)
 
 - Vue3.0中可以继续使用Vue2.x中的生命周期钩子，但有有两个被更名：
   - ```beforeDestroy```改名为 ```beforeUnmount```
