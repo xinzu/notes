@@ -52,6 +52,8 @@ mustache 语法(双大括号)不能作用在 HTML 特性(属性)上，遇到这�
 
    `<list @hook:mounted="listMounted" />`
 
+   `vue3`: `<list @vue:mounted="listMounted" >`
+
 ### 路由组件传参
 
 1. 布尔模式
