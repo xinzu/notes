@@ -689,6 +689,63 @@ npm run dev
       - 如果有重名, setup优先。
    2. setup不能是一个async函数，因为返回值不再是return的对象, 而是promise, 模板看不到return对象中的属性。（后期也可以返回一个Promise实例，但需要Suspense和异步组件的配合）
 
+6. 在setup语法糖`<script setup>`中使用$attrs和$slots
+
+   [vue3的setup语法糖]: https://blog.csdn.net/qq_34093387/article/details/126005287
+
+    `$attrs`、`$slots`： 
+
+   ```
+   // App.vue
+   <template>
+   	<Child v-bind="attrs">
+   		<v-slot>default</v-slot>
+           <template #hello>
+               hello world
+           </template>
+       </Child>
+   </template>
+   <script setup>
+   const attrs = {
+   	id: 'child',
+   	a: 1,
+   	b: 2
+   }
+   </script>
+   
+   // Child.vue
+   <template>
+   	<div id="test">
+           props: {{ props.count }}
+           <br />
+           attrs: {{ attrs.a }}----{{ attrs.b }}
+           <br />
+           slot: <slot></slot>
+           <br />
+           hello slot: <slot name="hello"></slot>
+       </div>
+   </template>
+   <script setup>
+   import { useAttrs, useSlots } from 'vue';
+   const attrs = useAttrs();
+   const slots = useSlots();
+   </script>
+   
+   // 编辑结果
+   <div data-v-e1a5aa23="" data-v-7a7a37b1="" id="child" a="1" b="2">
+   	props: 1 
+   	<br data-v-e1a5aa23=""> 
+   	attrs: 1----2 
+   	<br data-v-e1a5aa23="">
+   	slot: default
+   	<br data-v-e1a5aa23=""> 
+   	hello slot:  hello world 
+   </div>
+   
+   ```
+
+   
+
 ###  2.ref函数
 
 - 作用: 定义一个响应式的数据
