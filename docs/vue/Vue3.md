@@ -689,62 +689,10 @@ npm run dev
       - 如果有重名, setup优先。
    2. setup不能是一个async函数，因为返回值不再是return的对象, 而是promise, 模板看不到return对象中的属性。（后期也可以返回一个Promise实例，但需要Suspense和异步组件的配合）
 
-6. 在setup语法糖`<script setup>`中使用$attrs和$slots
+[vue3的setup语法糖]: https://blog.csdn.net/qq_34093387/article/details/126005287
+[ setu语法糖2]:https://blog.csdn.net/bsegebr/article/details/126080409
 
-   [vue3的setup语法糖]: https://blog.csdn.net/qq_34093387/article/details/126005287
 
-    `$attrs`、`$slots`： 
-
-   ```
-   // App.vue
-   <template>
-   	<Child v-bind="attrs">
-   		<v-slot>default</v-slot>
-           <template #hello>
-               hello world
-           </template>
-       </Child>
-   </template>
-   <script setup>
-   const attrs = {
-   	id: 'child',
-   	a: 1,
-   	b: 2
-   }
-   </script>
-   
-   // Child.vue
-   <template>
-   	<div id="test">
-           props: {{ props.count }}
-           <br />
-           attrs: {{ attrs.a }}----{{ attrs.b }}
-           <br />
-           slot: <slot></slot>
-           <br />
-           hello slot: <slot name="hello"></slot>
-       </div>
-   </template>
-   <script setup>
-   import { useAttrs, useSlots } from 'vue';
-   const attrs = useAttrs();
-   const slots = useSlots();
-   </script>
-   
-   // 编辑结果
-   <div data-v-e1a5aa23="" data-v-7a7a37b1="" id="child" a="1" b="2">
-   	props: 1 
-   	<br data-v-e1a5aa23=""> 
-   	attrs: 1----2 
-   	<br data-v-e1a5aa23="">
-   	slot: default
-   	<br data-v-e1a5aa23=""> 
-   	hello slot:  hello world 
-   </div>
-   
-   ```
-
-   
 
 ###  2.ref函数
 
@@ -840,10 +788,89 @@ npm run dev
 
 - setup的参数
   - props：值为对象，包含：组件外部传递过来，且组件内部声明接收了的属性。
+  
+    ```
+    export default {
+    	props: ['message'],
+    	setup(props, context) {
+    		console.log(props.text);
+    	}
+    }
+    
+    // setup语法糖
+    const props = defineProps(['message']);
+    console.log(props.text);
+    ```
+  
+    
+  
   - context：上下文对象
     - attrs: 值为对象，包含：组件外部传递过来，但没有在props配置中声明的属性, 相当于 ```this.$attrs```。
+  
     - slots: 收到的插槽内容, 相当于 ```this.$slots```。
+  
     - emit: 分发自定义事件的函数, 相当于 ```this.$emit```。
+  
+      ```
+      // App.vue
+      <template>
+      	<Child v-bind="attrs" @btnClick="btnClick">
+      		<v-slot>default</v-slot>
+              <template #hello>
+                  hello world
+              </template>
+          </Child>
+      </template>
+      <script setup>
+      const attrs = {
+      	id: 'child',
+      	a: 1,
+      	b: 2
+      }
+      const btnClick = (params) => {
+      	console.log("===btnClick", params);
+      }
+      </script>
+      
+      // Child.vue
+      <template>
+      	<div id="test">
+              props: {{ props.count }}
+              <br />
+              attrs: {{ attrs.a }}----{{ attrs.b }}
+              <br />
+              slot: <slot></slot>
+              <br />
+              hello slot: <slot name="hello"></slot>
+              <button @click="btnClick">点我!</button>
+          </div>
+      </template>
+      <script setup>
+      import { useAttrs, useSlots } from 'vue';
+      const attrs = useAttrs();
+      const slots = useSlots();
+      const emits = defineEmits(['btnClick']);
+      
+      const btnClick = () => {
+      	emits('btnClick', 'this is btnClick params');
+      }
+      
+      </script>
+      
+      // 编辑结果
+      <div data-v-e1a5aa23="" data-v-7a7a37b1="" id="child" a="1" b="2">
+      	props: 1 
+      	<br data-v-e1a5aa23=""> 
+      	attrs: 1----2 
+      	<br data-v-e1a5aa23="">
+      	slot: default
+      	<br data-v-e1a5aa23=""> 
+      	hello slot:  hello world 
+      </div>
+      
+      ```
+  
+      
 
 
 ### 7.计算属性与监视
@@ -942,7 +969,7 @@ npm run dev
   ```
 
 ### 8.生命周期
-![vue3生命周期](/notes/img//vue3lifecycle.png)
+![vue3生命周期](/notes/img/vue3lifecycle.png)
 
 - Vue3.0中可以继续使用Vue2.x中的生命周期钩子，但有有两个被更名：
   - ```beforeDestroy```改名为 ```beforeUnmount```
@@ -967,7 +994,7 @@ npm run dev
 
 
 
-### 10.toRef
+### 10.toRef/toRefs
 
 - 作用：创建一个 ref 对象，其value值指向另一个对象中的某个属性。
 - 语法：```const name = toRef(person,'name')```
@@ -986,7 +1013,7 @@ npm run dev
 
 - 什么时候使用?
   -  如果有一个对象数据，结构比较深, 但变化时只是外层属性变化 ===> shallowReactive。
-  -  如果有一个对象数据，后续功能不会修改该对象中的属性，而是生新的对象来替换 ===> shallowRef。
+  -  如果有一个对象数据，后续功能不会修改该对象中的属性，而是生成新的对象来替换 ===> shallowRef。
 
 ### 2.readonly 与 shallowReadonly
 
@@ -997,7 +1024,7 @@ npm run dev
 ### 3.toRaw 与 markRaw
 
 - toRaw：
-  - 作用：将一个由```reactive```生成的<strong style="color:orange">响应式对象</strong>转为<strong style="color:orange">普通对象</strong>。
+  - 作用：将一个由```reactive```生成的<strong style="color:orange">响应式对象</strong>转为<strong style="color:orange">普通对象</strong>。是把响应式对象复制一份数据，让这个数据变成普通对象, 就是不改变原对象, 返回值就是普通对象。
   - 使用场景：用于读取响应式对象对应的普通对象，对这个普通对象的所有操作，不会引起页面更新。
 - markRaw：
   - 作用：标记一个对象，使其永远不会再成为响应式对象。
@@ -1043,7 +1070,7 @@ npm run dev
   					}
   				})
   			}
-  			let keyword = myreRef('hello',500) //使用程序员自定义的ref
+  			let keyword = myRef('hello',500) //使用程序员自定义的ref
   			return {
   				keyword
   			}
