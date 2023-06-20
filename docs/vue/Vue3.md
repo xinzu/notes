@@ -239,11 +239,11 @@ vue3.x支持多节点
 
 `<child-component @hook:updated="onUpdated">`
 
-**vue3**中用的是vnode-前缀或者在驼峰命名法的情况下附带前缀 vnode
+**vue3**中用的是vue:前缀或者在驼峰命名法的情况下附带前缀 vue
 
-`<child-component @vnode-updated="onUpdated">`
+`<child-component @vue:updated="onUpdated">`
 
-`<child-component @vnodeUpdated="onUpdated">`
+`<child-component @vueUpdated="onUpdated">`
 
 ### 指令
 
