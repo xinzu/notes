@@ -1641,17 +1641,17 @@ p {
 
 ```
 
-# Pinia
+## Pinia
 
 一个vue的store存储库。
 
-## 与vuex的比较
+### 与vuex的比较
 
 - 去掉了*mutations* 
 - 不再有 *modules* 的嵌套结构
 - 没有 *命名空间模块*
 
-## 安装
+### 安装
 
 ```sh
 yarn add pinia
@@ -1670,7 +1670,7 @@ const app = createApp();
 app.use(pinia).mount('#app');
 ```
 
-## 定义一个Store
+### 定义一个Store
 
 - **State**: 返回初始状态数据的函数
 - **Getters**: 等同于 Store 状态的计算值
@@ -1712,7 +1712,7 @@ export const useUserStore = defineStore('user', {
 })
 ```
 
-## 使用
+### 使用
 
 ```vue
 <script setup>
@@ -1752,7 +1752,7 @@ export const useUserStore = defineStore('user', {
 </script>
 ```
 
-## 改变状态
+### 改变状态
 
 ```js
 // 直接修改
@@ -1768,4 +1768,4 @@ store.$patch((state) => {
 store.$state = { name: 'hello' }
 ```
 
-# 面试题
+## 面试题

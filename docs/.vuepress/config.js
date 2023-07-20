@@ -80,6 +80,9 @@ module.exports = {
                     }, {
                         title: 'vue3',
                         path: '/vue/Vue3.md',
+                    }, {
+                        title: 'vue-router',
+                        path: '/vue/Vue-Router.md',
                     }
                 ]
             }, {
