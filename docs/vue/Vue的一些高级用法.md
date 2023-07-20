@@ -24,6 +24,15 @@ mustache 语法(双大括号)不能作用在 HTML 特性(属性)上，遇到这�
 
 `this.$emit('update:foo', newValue)`
 
+**vue3**
+
+在 3.x 中，**自定义组件**上的 `v-model` 相当于传递了 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
+
+- 修改model名称，可以通过`v-model:title="pageTitle"`，与vue2中的`v-bind:title.sync="pageTitle"`
+- 一个组件可以使用多个v-model
+
+`<comp v-model:foo="bar"></comp>`
+
 ### 自定义组件的v-model
 
 `<comp v-modal="val">`

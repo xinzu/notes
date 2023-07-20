@@ -8,7 +8,7 @@
 
 相较于JS而言，TS拥有了静态类型，更加严格的语法，更强大的功能；TS可以在代码执行前就完成代码的检查，减小了运行时异常的出现的几率；TS代码可以编译为任意版本的JS代码，可有效解决不同JS运行环境的兼容问题；同样的功能，TS的代码量要大于JS，但由于TS的代码结构更加清晰，变量类型更加明确，在后期代码的维护中TS却远远胜于JS。
 
-## 1、开发环境搭建
+## 开发环境搭建
 
 1. 安装Node.js：https://nodejs.org/dist/v14.15.1/node-v14.15.1-x64.msi
 
@@ -24,7 +24,7 @@
 
    
 
-## 2、基本类型
+## 基本类型
 
 - 类型声明
 
@@ -414,7 +414,7 @@ function getName(n: NameOrResolver): Name {
 
 #### 与interface的区别
 
-[interface](#4、接口（Interface）)
+[interface](#接口-Interface)
 
 ##### 相同点
 
@@ -543,13 +543,13 @@ function getName(n: NameOrResolver): Name {
 
 #### 函数的合并
 
-[重载](重载)
+[重载](#重载)
 
 #### 接口的合并
 
-[interface](与interface的区别)
+[interface](#与interface的区别)
 
-## 3、类（class）
+## 类-class
 
 ###  ES6 中新增了class
 
@@ -817,7 +817,7 @@ class Car implements Alarm, Light {
 }
 ```
 
-## 4、接口（Interface）
+## 接口-Interface
 
 TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](#类实现接)以外，也常用于对「对象的形状（Shape）」进行描述。
 
@@ -874,7 +874,7 @@ interface Point3d extends PointInstanceType {
 let point3d: Point3d = {x: 1, y: 2, z: 3};
 ```
 
-## 5、泛型（Generic）
+## 泛型-Generic
 
 > 指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。
 
@@ -1010,7 +1010,7 @@ function createArray<T = string>(length: number, value: T): Array<T> {
 }
 ```
 
-## 6、编译选项
+## 编译选项
 
 ### 自动编译文件
 
@@ -1248,7 +1248,7 @@ function createArray<T = string>(length: number, value: T): Array<T> {
           - 是否忽略不可达代码
 
 
-## 7、声明文件
+## 声明文件
 
 ## webpack
 

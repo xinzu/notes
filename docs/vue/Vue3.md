@@ -768,6 +768,49 @@ npm run dev
       proxy.name = 'tom'   
       ```
 
+- 关于Proxy为什么要配合Reflect一起用
+
+  https://blog.csdn.net/qq_45828551/article/details/126251545
+
+  **Proxy 中接受的 receiver 形参，表示代理对象本身 或者 继承了代理对象的对象。**
+
+  **Reflect 中传入的 receiver实参，表示修改执行原始操作时的 this 指向。**
+  
+  ```js
+  let parent = {
+    name: "Tom",
+    get value() {
+      return this.name;
+    },
+  };
+   
+  let proxy = new Proxy(parent, {
+    get(target, key, receiver) {
+      return target[key]; // 等同于没有传入receiver的Reflect: return Reflect.get(target, key) 
+    },
+  });
+   
+  let child = { name: "小Tom" };
+  // 设置 child 继承 代理对象 proxy
+  Object.setPrototypeOf(child, proxy);
+   
+  console.log(child.value);
+  
+  // 因为child没有value属性，但是它继承的 proxy 对象中存在 value 属性的访问方法
+  // 所以触发proxy上的get value()，由于访问的是proxy上的value属性，所以this指向了proxy
+  ```
+  
+  ```js
+  // Reflect传入receiver参数时，把属性访问中的this指向了receiver对象
+  let proxy = new Proxy(parent, {
+    get(target, key, receiver) {
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  ```
+  
+  
+
 ### 5.reactive对比ref
 
 -  从定义数据角度对比：
@@ -854,22 +897,23 @@ npm run dev
       const btnClick = () => {
       	emits('btnClick', 'this is btnClick params');
       }
-      
       </script>
       
-      // 编辑结果
-      <div data-v-e1a5aa23="" data-v-7a7a37b1="" id="child" a="1" b="2">
-      	props: 1 
-      	<br data-v-e1a5aa23=""> 
-      	attrs: 1----2 
-      	<br data-v-e1a5aa23="">
-      	slot: default
-      	<br data-v-e1a5aa23=""> 
-      	hello slot:  hello world 
-      </div>
-      
+      // 非setup语法糖
+      <script>
+      export default {
+      	emits: ['btnClick'], // 这里定义了ctx里面才会有该方法
+      	setup(props, ctx) {
+      		const btnClick = () => {
+      			ctx.emit('btnClick', 'this is btnClick params');
+      		}
+      		
+      		return { btnClick }
+      	}
+      }
+      </script>
       ```
-  
+      
       
 
 
@@ -974,6 +1018,7 @@ npm run dev
 - Vue3.0中可以继续使用Vue2.x中的生命周期钩子，但有有两个被更名：
   - ```beforeDestroy```改名为 ```beforeUnmount```
   - ```destroyed```改名为 ```unmounted```
+
 - Vue3.0也提供了 Composition API 形式的生命周期钩子，与Vue2.x中钩子对应关系如下：
   - `beforeCreate`===>`setup()`
   - `created`=======>`setup()`
@@ -984,15 +1029,73 @@ npm run dev
   - `beforeUnmount` ==>`onBeforeUnmount`
   - `unmounted` =====>`onUnmounted`
 
+- 父子组件生命周期触发顺序
+
+  - 组件加载时
+
+    父组件onBeforeMount -> 子组件onBeforeMount -> 子组件onMounted -> 父组件onMounted
+
+  - 子组件更新时
+
+    子组件onBeforeUpdate -> 子组件onUpdated- > 父组件onBeforeUpdate -> 父组件onUpdated
+
+  - 父组件更新时，如果不涉及到传给子组件的值变更，子组件不会触发钩子函数，如果有的话
+
+    父组件onBeforeUpdate -> 子组件onBeforeUpdate -> 子组件onUpdated- > 父组件onUpdated
+
 ### 9.自定义hook函数
 
 - 什么是hook？—— 本质是一个函数，把setup函数中使用的Composition API进行了封装。
-
 - 类似于vue2.x中的mixin。
-
 - 自定义hook的优势: 复用代码, 让setup中的逻辑更清楚易懂。
 
+```vue
+// hook.js
+import {onBeforeMount, onBeforeUnmount, reactive} from 'vue'
+export default function () {
+    const point = reactive({
+        x:0,
+        y:0
+    })
+    function savePoint (event) {
+        point.y = event.pageY
+        point.x = event.pageX
+        console.log('x,y', point.y, point.x)
+    }
+    onBeforeMount(() => {
+        // 监听click事件
+        window.addEventListener('click',savePoint)
+    })
+    onBeforeUnmount(() => {
+        window.removeEventListener('click',savePoint)
+    })
+    return point
+};
 
+// com.js
+<template>
+    <h2>当前求和为：{{ sum }}</h2>
+    <button @click="sum++">点我+1</button>
+    <h2>{{point}}</h2>
+</template>
+<script>
+    import usePoint from './hook.js';
+    import {ref} from 'vue';
+    export default {
+        name: 'Demo',
+        setup(){
+            //数据
+            let sum = ref(0)
+            // 引用公共hook函数
+            let point = usePoint()
+            return {
+                sum,
+                point
+            }
+        }
+    }
+</script>
+```
 
 ### 10.toRef/toRefs
 
@@ -1055,19 +1158,20 @@ npm run dev
   				let timer
   				//通过customRef去实现自定义
   				return customRef((track,trigger)=>{
-  					return{
+  					return {
   						get(){
   							track() //告诉Vue这个value值是需要被“追踪”的
-  							return value
-  						},
-  						set(newValue){
-  							clearTimeout(timer)
-  							timer = setTimeout(()=>{
-  								value = newValue
-  								trigger() //告诉Vue去更新界面
-  							},delay)
+                                  return value
+                              },
+                              set(newValue){
+                                  // 防抖
+                                  clearTimeout(timer)
+                                  timer = setTimeout(()=>{
+                                      value = newValue
+                                      trigger() //告诉Vue去更新界面
+                                  },delay)
+                              }
   						}
-  					}
   				})
   			}
   			let keyword = myRef('hello',500) //使用程序员自定义的ref
@@ -1078,12 +1182,9 @@ npm run dev
   	}
   </script>
   ```
-
   
 
-### 5.provide 与 inject
-
-<img src="https://v3.cn.vuejs.org/images/components_provide.png" style="width:300px" />
+### 5. provide 与 inject
 
 - 作用：实现<strong style="color:#DD5145">祖与后代组件间</strong>通信
 
@@ -1339,6 +1440,332 @@ npm run dev
 
 ## vue3 setup语法糖
 
-## vue3源码分析
+### 基础用法
 
-## 常见问题
+```vue
+<script setup>
+    console.log("=============")
+</script>
+```
+
+### data和methods
+
+```vue
+<template>
+    <h1>{{ msg }}</h1>
+    <p>{{obj.key}}</p>
+    <input v-model="num" type="text" />
+    <button @click="log">打印日志</button>
+</template>
+
+<script setup>
+    import { ref, reactive } from 'vue';
+    const msg = ref('');
+    const obj = reactive({
+        key: ''
+    });
+    const num = ref('');
+    
+    const log = () => {
+        console.log("======log")
+    }
+</script>
+```
+
+### 计算属性
+
+```vue
+<template>
+    <h1>计数：{{ countPlus }}</h1>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+
+let count = ref(0)；
+const countPlus = computed(()=>{
+    return count.value + 1;
+})；
+</script>
+
+```
+
+### watch/watchEffect
+
+```vue
+<template>
+    <button @click="onChange">改变count</button>
+</template>
+
+<script setup>
+import { ref, reactive, watch } from 'vue'
+// 监听ref
+let count = ref(0)
+watch(count, (newVal, oldVal)=> {
+    console.log('修改后', newVal)
+    console.log('修改前', oldVal)
+})
+
+// 监听reactive属性
+const obj = reactive({
+    count: 0
+})
+watch(
+    ()=> obj.count,     // 一个函数，返回监听属性
+    (newVal, oldVal)=> {
+        console.log('修改后', newVal);
+        console.log('修改前', oldVal)
+    },
+    {
+        immediate: true,     // 立即执行，默认为false
+        deep: true     // 深度监听，默认为false
+    }
+)
+    
+// watchEffect
+watchEffect(() => {
+     console.log('修改后', count.value);
+     console.log('修改后', obj.count);
+})
+
+const onChange = function(){
+    count.value++
+    obj.count++
+}
+</script>
+```
+
+### 声明props和emits
+
+```vue
+// Child.vue
+<template>
+    <h1>信息：{{ info }}</h1>
+    <button @click="onChange">点击我</button>
+</template>
+
+<script setup>
+// 声明props
+const props = defineProps({
+    info: {
+        type: String,
+        default: ''
+    }
+})
+// 声明emits
+const $emit = defineEmits(['change'])
+
+const onChange = function() {
+    $emit('change', 'child返回值')
+}
+</script>
+
+// Parent.vue
+<template>
+    <child :info="msg" @change="onAction"></child>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import Child from './Child.vue'
+
+const msg = ref('hello setup !')    // 响应式变量
+
+const onAction = function(event) {
+    console.log(event)    // child返回值
+}
+</script>
+```
+
+### 父组件获取子组件的数据
+
+父组件要想通过ref获取子组件的变量或函数，子组件须使用**defineExpose**暴露出去
+
+```vue
+// Child.vue
+<template>
+    <h1>信息：{{ info }}</h1>
+    <button @click="onChange">点击我</button>
+</template>
+
+<script setup>
+import { ref, defineExpose } from 'vue'
+
+const info = ref('I am child')
+const onChange = function() {
+    console.log('Function of child')
+}
+// 暴露属性
+defineExpose({
+    info,
+    onChange
+})
+</script>
+
+// Parent.vue
+<template>
+    <child ref="childRef"></child>
+    <button @click="onAction">获取子值</button>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import Child from './Child.vue'
+
+const childRef = ref()
+const onAction = function() {
+    console.log(childRef.value.info)    // I am child
+    console.log(childRef.value.onChange())    // Function of child
+}
+</script>
+```
+
+### 动态css
+
+```vue
+<template>
+  <p>hello</p>
+</template>
+
+<script setup>
+const theme = {
+  color: 'red'
+}
+</script>
+
+<style scoped>
+p {
+  color: v-bind('theme.color');
+}
+</style>
+
+```
+
+# Pinia
+
+一个vue的store存储库。
+
+## 与vuex的比较
+
+- 去掉了*mutations* 
+- 不再有 *modules* 的嵌套结构
+- 没有 *命名空间模块*
+
+## 安装
+
+```sh
+yarn add pinia
+# 或者使用 npm
+npm install pinia
+```
+
+```js
+// 在main.js中使用
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+const app = createApp();
+
+app.use(pinia).mount('#app');
+```
+
+## 定义一个Store
+
+- **State**: 返回初始状态数据的函数
+- **Getters**: 等同于 Store 状态的计算值
+  - 可以在getters的方法中使用`this`
+  - 可以在使用时执行给该方法传值
+- **Actions**: 方法，用于操作`State`中的数据
+
+**可以使用其他store中的数据**
+
+```js
+// store/user.js
+import { defineStore } from 'pinia';
+
+import { usePointStore } from './auth-store';
+const pointStore = usePointStore();
+
+export const useUserStore = defineStore('user', {
+    state: () => ({
+        counter: 0,
+        users: [],
+    }),
+    getters: {
+        doubleCount: (state) => state.counter * 2,
+        doubleCountPlusOne() {
+            return this.doubleCount + 1;
+        },
+        getUserById: (state) => {
+          	return (userId) => state.users.find((user) => user.id === userId);
+        },
+        getOtherStore: () => {
+            return pointStore.pointId;
+        },
+    },
+    actions: {
+        increment() {
+            this.counter += 1;
+        }
+    }
+})
+```
+
+## 使用
+
+```vue
+<script setup>
+    import { useUserStore } from '@/store/user.js'
+    const userStore = useUserStore();
+
+    // 获取state
+    console.log(userStore.counter);
+    
+    // 获取getter
+    console.log(userStore.doubleCount);
+    console.log(userStore.doubleCountPlusOne);
+    
+    // getter传值
+    console.log(userStore.getUserById('123'));
+    
+    // 执行actions
+    userStore.increment();
+    
+</script>
+```
+
+```vue
+<script>
+    import { mapState } from 'pinia'
+    import { useUserStore } from '@/store/user.js'
+
+    export default {
+          computed: {
+            ...mapState(useUserStore, ['counter', 'doubleCount']),
+          },
+        methods: {
+            ...mapActions(useUserStore, ['increment'])
+        }
+    }
+
+</script>
+```
+
+## 改变状态
+
+```js
+// 直接修改
+store.counter = 1;
+// $patch
+store.$patch({
+    counter: 1,
+});
+store.$patch((state) => {
+    state.counter = 1;
+})
+// 整个替换state
+store.$state = { name: 'hello' }
+```
+
+# 面试题
