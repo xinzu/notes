@@ -21,8 +21,10 @@ setState放在异步函数中，如果用setState(count+1)这种形式，触发�
 - **react18**
 
   setState 和 useState的区别
-  相同点：执行多个set（相同/不同都可以）时只执行一次render；同步和异步render执行次数和结果都是一样的
-  不同点：setState只执行最后一次setState，useState每次都会执行（比如同一个state.a=0执行两次++，setState最后返回的是1，useState返回的是2）
+
+  - 相同点：执行多个set（相同/不同都可以）时只执行一次render；同步和异步render执行次数和结果都是一样的
+
+  - 不同点：setState只执行最后一次setState，useState每次都会执行（比如同一个state.a=0执行两次++，setState最后返回的是1，useState返回的是2）
 
 - **react18之前**
 
@@ -242,7 +244,7 @@ setState放在异步函数中，如果用setState(count+1)这种形式，触发�
    </div>
    ```
 
-7. 布尔类型、Null以及Undefined将会被忽略
+7. 布尔类型、Null、Undefined、Symbol、BigInt将会被忽略
 
    > `false`, `null`, `undefined`, and `true` 是合法的子元素。但它们并不会被渲染。
 
@@ -784,11 +786,7 @@ handleClick = () => {
 
 在`React`的事件处理系统中，默认的事件流就是冒泡，如果希望以捕获的方式来触发事件的话，可以使用`onClickCapture`来绑定事件，也就是在事件类型后面加一个后缀`Capture`
 
-#### 事件委托
 
-#### 合成事件
-
-#### 原生事件
 
 ## protal
 
@@ -1382,7 +1380,88 @@ export default App;
 
 
 
-#### Mobx-redux
+### Mobx-Redux-lite
+
+#### 安装
+
+```shell
+npm install mobx mobx-react-lite
+```
+
+#### 用法
+
+```js
+// store/menu.ts
+// 创建一个store
+import {
+    makeAutoObservable,
+    runInAction
+} from 'mobx';
+import { MenuItem } from './types'
+
+class MenuStore {
+    menuData: MenuItem[] = [];
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    setMenuData(data: MenuItem[]) {
+        runInAction(() => {
+            this.menuData = data;
+        })
+    }
+}
+
+const menuStore = new MenuStore();
+
+export default menuStore;
+```
+
+```js
+// App.vue
+// 使用observer监听store
+import DefaultRouter from '@/router'; 
+import {
+    useRoutes, useNavigate, useLocation  
+} from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import PubSub from 'pubsub-js';
+import { useEffect } from 'react';
+
+function App() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const whiteList = ['/', '/overview']
+        if (!whiteList.includes(location.pathname)) navigate('/')
+    }, [])
+
+    // 监听当前 location改变
+    // topic: string, route: string
+    PubSub.subscribe('changeRoute',(topic: string, route: string) => {
+        navigate(route, { replace: true })
+    });
+
+    return useRoutes(DefaultRouter);
+}
+// 将 store 对象传递给组件
+export default observer(App);
+```
+
+```js
+// 使用store
+import menuStore from '@/store/menu';
+menuStore.setMenuData(res);
+```
+
+
+
+#### 创建可观察状态
+
+- makeObservable
+- makeAutoObservable：自动推断所有属性
 
 ## reactHooks
 
@@ -1419,7 +1498,7 @@ export default App;
 
 副作用操作的例子：
 
-![image-20230201153745912](imgs/react/react-副作用.png)
+![image-20230201153745912](/notes/imgs/react/react-副作用.png)
 
 ```
 const ThemeContext = React.createContext({
@@ -1694,10 +1773,7 @@ const memoizedCallback = useCallback(
 
 - useCallback 和 useMemo 的区别
 
-​	`useCallback`返回一个函数，当把它返回的这个函数作为子组件使用时，可以避免每次父组件更新时都重新渲染这个子组件；`seMemo`返回的的是一个值，用于避免在每次渲染时都进行高开销的计算。
-
-- 什么时候用`useCallback`、`useMemo`
-- 任何时候都用是一个好的习惯，但是大部分时间不用也没什么大问题。但是如果该函数或变量作为 props 传给子组件，请一定要用，避免子组件的非必要渲染
+​	`useCallback`返回一个函数，当把它返回的这个函数作为子组件使用时，可以避免每次父组件更新时都重新渲染这个子组件；`useMemo`返回的的是一个值，用于避免在每次渲染时都进行高开销的计算。
 
 #### useContext
 
@@ -1735,9 +1811,3 @@ function Button() {
 }
 ```
 
-
-
-## 源码分析
-
-[#userState]: 
-[#useState]: 

@@ -95,7 +95,12 @@ module.exports = {
                     {
                         title: 'react',
                         path: '/react/react.md',
-                    }, {
+                    },
+                    {
+                        title: 'newReact',
+                        path: '/react/newReact.md',
+                    },
+                    {
                         title: 'react-native',
                         path: '/react/react-native.md'
                     }
@@ -109,6 +114,10 @@ module.exports = {
                     {
                         title: 'fiddler',
                         path: '/工具类/fiddler/fiddler工具使用.md',
+                    },
+                    {
+                        title: 'node包开发',
+                        path: '/工具类/fiddler/node包开发.md',
                     }
                 ]
             },
