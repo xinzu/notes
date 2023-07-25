@@ -738,6 +738,14 @@ const FancyInput = forwardRef((props, ref) => {
   }
   ```
 
+#### 事件流
+
+在`React`的事件处理系统中，默认的事件流就是冒泡，如果希望以捕获的方式来触发事件的话，可以使用`onClickCapture`来绑定事件，也就是在事件类型后面加一个后缀`Capture`
+
+#### 事件委托
+
+#### 合成事件原理
+
 ### 	JSX底层渲染机制
 
 1. 将JSX语法编译为虚拟DOM对象 [virtualDOM]

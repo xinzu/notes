@@ -109,11 +109,11 @@ module.exports = {
                 children: [
                     {
                         title: 'fiddler',
-                        path: '/工具类/fiddler/fiddler工具使用.md',
+                        path: '/工具类/fiddler工具使用.md',
                     },
                     {
                         title: 'node包开发',
-                        path: '/工具类/fiddler/node包开发.md',
+                        path: '/工具类/node包开发.md',
                     }
                 ]
             },

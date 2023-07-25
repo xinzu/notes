@@ -20,7 +20,7 @@ const router = createRouter({
 import VueRouter from "vue-router"'
 const router = new VueRouter({
     // options
-    ......
+    // ......
 })
 ```
 
@@ -113,7 +113,7 @@ export default createRouter({
 
 > router-link通过一个作用于插槽暴露底层的定制能力：
 
-- `href`：解析后的 URL。将会作为一个 <a> 元素的 href 属性。如果什么都没提供，则它会包含 base。
+- `href`：解析后的 URL。将会作为一个 `a` 元素的 href 属性。如果什么都没提供，则它会包含 base。
 - `route`：解析后的规范化的地址。
 - `navigate`：触发导航的函数。 
 - `isActive`：如果需要应用 active class，则为 true。允许应用一个任意的 class。**（会在当前路由匹配到的路由及其子路由上添加）**
