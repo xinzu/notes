@@ -13,5 +13,9 @@
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "docs:deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "@types/react": "^18.2.15",
+    "scss": "^0.2.4"
   }
 }

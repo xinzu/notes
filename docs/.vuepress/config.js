@@ -94,10 +94,6 @@ module.exports = {
                 children: [
                     {
                         title: 'react',
-                        path: '/react/react.md',
-                    },
-                    {
-                        title: 'newReact',
                         path: '/react/newReact.md',
                     },
                     {

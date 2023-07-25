@@ -24,7 +24,7 @@ setState放在异步函数中，如果用setState(count+1)这种形式，触发�
 
   - 相同点：执行多个set（相同/不同都可以）时只执行一次render；同步和异步render执行次数和结果都是一样的
 
-  - 不同点：setState只执行最后一次setState，useState每次都会执行（比如同一个state.a=0执行两次++，setState最后返回的是1，useState返回的是2）
+  - 不同点：setState只执行最后一次，useState每次都会执行（比如同一个state.a=0执行两次++，setState最后返回的是1，useState返回的是2）
 
 - **react18之前**
 
