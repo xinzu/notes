@@ -742,9 +742,39 @@ const FancyInput = forwardRef((props, ref) => {
 
 在`React`的事件处理系统中，默认的事件流就是冒泡，如果希望以捕获的方式来触发事件的话，可以使用`onClickCapture`来绑定事件，也就是在事件类型后面加一个后缀`Capture`
 
-#### 事件委托
+![image-20230726112551184](/notes/imgs/react/react事件流.jpg)
 
 #### 合成事件原理
+
+1. React中的合成事件，都是基于事件委托处理的
+
+   - 在React17及以后版本，都是委托给`#root`这个容器
+   - 在17版本以前，都是委托给document容器的，而且只做了冒泡阶段的委托
+   - 对于没有实现事件传播机制的事件，才是单独做的事件绑定 『例如：onMouseEnter/onMouseLeave』
+
+2. 在组件渲染中，如果发现 JSX 元素属性中有 onXxx / onXxxCapture 这样的属性，不会给当前元素直接做事件绑定，只是把绑定的方法赋值给元素的相关属性
+
+   - 对`#root`这个元素做事件委托
+
+     ```js
+     // 冒泡
+     root.addEventListener('click', ev => {
+         const path = ev.path;
+         [...path].forEach(ele => {
+             ele.onClick && ele.onClick();
+         })
+     }, false);
+     
+     // 捕获
+     root.addEventListener('click', ev => {
+         const path = ev.path;
+         [...path].reverse.forEach(ele => {
+             ele.onClickCamputer && ele.onClickCamputer();
+         })
+     }, true);
+     ```
+
+#### 合成事件的底层机制
 
 ### 	JSX底层渲染机制
 
