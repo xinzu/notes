@@ -1,4 +1,4 @@
-## React
+##   React
 
 ### 安装
 
@@ -423,6 +423,8 @@ export default function TestC(props) {
 
 > 函数组件接收一个单一的 `props` 对象并返回了一个React元素
 
+**函数组件的每一次更新都是将函数重新执行**
+
 ```tsx
 // Test.tsx
 export default function Test() {
@@ -492,7 +494,7 @@ PureComponent自带通过props和state的**浅对比**来实现 shouldComponentU
 
   父`shouldComponentUpdate` --> 父`componentWillUpdate` --> 父`render` --> 
 
-  ​	子`componentWillReceiveProps` -->子`shouldComponentUpdate` --> 子`componentWillUpdate` --> 子`render` --> 子`componentDidUpdate` --> 
+  ​		子`componentWillReceiveProps` -->子`shouldComponentUpdate` --> 子`componentWillUpdate` --> 子`render` --> 子`componentDidUpdate` --> 
 
   父`componentDidUpdate`
 
@@ -500,7 +502,7 @@ PureComponent自带通过props和state的**浅对比**来实现 shouldComponentU
 
   父`componentWillUnmount` --> 
 
-  ​	子`omponentWillUnmount` --> 子销毁 --> 
+  ​		子`omponentWillUnmount` --> 子销毁 --> 
 
   父销毁
 
@@ -557,7 +559,81 @@ PureComponent自带通过props和state的**浅对比**来实现 shouldComponentU
 
    ![image-20230725174637558](D:/notes/imgs/react/批处理.png)
 
+   ```tsx
+   export default class ClassTest extends Component {
+       state = {
+           x: 1,
+           y: 1,
+           z: 1
+       }
+   
+       handleClick = () => {
+           // 视图更新一次
+           this.setState({x: 2});
+           this.setState({y: 2});
+           this.setState({z: 2});
+           // 结果：1 1 1，先打印这一行再打印RENDER
+           console.log(this.state.x, this.state.x, this.state.x);
+           
+           // 视图更新一次
+           /*
+           setTimeout(() => {
+               this.setState({x: 2});
+               this.setState({y: 2});
+               this.setState({z: 2});
+               // 结果：1 1 1，先打印这一行再打印RENDER
+               console.log(this.state.x, this.state.x, this.state.x);
+   		});
+           */
+       }
+   
+       render() {
+           console.log("======RENDER=====")
+           return (
+               <div onClick={this.handleClick}>ClassTest{this.state.x}-{this.state.y}-{this.state.z}</div>
+           )
+       }
+   }
+   ```
+
    **react18之前**：在异步函数中是同步的，在同步函数中是异步的
+
+   ```tsx
+   export default class ClassTest extends Component {
+       state = {
+           x: 1,
+           y: 1,
+           z: 1
+       }
+   
+       handleClick = () => {
+           // 视图更新一次
+           this.setState({x: 2});
+           this.setState({y: 2});
+           this.setState({z: 2});
+           // 结果：1 1 1，先打印这一行再打印RENDER
+           console.log(this.state.x, this.state.x, this.state.x);
+           
+           // 视图更新三次
+           /*
+           setTimeout(() => {
+               this.setState({x: 2});
+               this.setState({y: 2});
+               this.setState({z: 2});
+               // 结果：2 2 2，打印三次RENDER之后打印这一行
+               console.log(this.state.x, this.state.x, this.state.x);
+   		});
+           */
+       }
+   
+       render() {
+           console.log("======RENDER=====")
+           return (
+               <div onClick={this.handleClick}>ClassTest{this.state.x}-{this.state.y}-{this.state.z}</div>
+           )
+       }
+   }
+   ```
 
 3. 退出批处理：`flushSync`
 
@@ -677,6 +753,11 @@ inputRef = useRef();
 
 #### forwardRef
 
+> 父组件传入子组件`ref`属性指向子组件中的任意节点
+
+- 没有使用`forwardRef`时，父组件传入子组件`ref`属性，此时`ref`指向的是**子组件本身**
+- 函数组件不能定义`ref`，必须使用`forwardRef`
+
 ```tsx
 // 父组件
 const App = () => {
@@ -742,14 +823,20 @@ const FancyInput = forwardRef((props, ref) => {
 
 在`React`的事件处理系统中，默认的事件流就是冒泡，如果希望以捕获的方式来触发事件的话，可以使用`onClickCapture`来绑定事件，也就是在事件类型后面加一个后缀`Capture`
 
-![image-20230726112551184](/notes/imgs/react/react事件流.jpg)
+- 18版本的事件流
+
+​		![image-20230803100408769](/notes/imgs/react/react18事件流.jpg)
+
+- 16版本的事件流
+
+  ![image-20230803100724037](/notes/imgs/react/react16事件流.jpg)
 
 #### 合成事件原理
 
 1. React中的合成事件，都是基于事件委托处理的
 
    - 在React17及以后版本，都是委托给`#root`这个容器
-   - 在17版本以前，都是委托给document容器的，而且只做了冒泡阶段的委托
+   - 在17版本以前，都是委托给`document`容器的，而且**只做了冒泡阶段的委托**
    - 对于没有实现事件传播机制的事件，才是单独做的事件绑定 『例如：onMouseEnter/onMouseLeave』
 
 2. 在组件渲染中，如果发现 JSX 元素属性中有 onXxx / onXxxCapture 这样的属性，不会给当前元素直接做事件绑定，只是把绑定的方法赋值给元素的相关属性
@@ -762,7 +849,7 @@ const FancyInput = forwardRef((props, ref) => {
          const path = ev.path;
          [...path].forEach(ele => {
              ele.onClick && ele.onClick();
-         })
+         });
      }, false);
      
      // 捕获
@@ -770,11 +857,57 @@ const FancyInput = forwardRef((props, ref) => {
          const path = ev.path;
          [...path].reverse.forEach(ele => {
              ele.onClickCamputer && ele.onClickCamputer();
-         })
+         });
      }, true);
      ```
+     
+   - 对`document`的冒泡阶段做了事件委托
+   
+     ```js
+     // 冒泡
+     document.addEventListener('click', ev => {
+         const path = ev.path;
+         // 捕获阶段事件处理
+         [...path].reverse.forEach(ele => {
+             ele.onClickCamputer && ele.onClickCamputer();
+         });
+     	// 冒泡阶段事件处理
+         [...path].forEach(ele => {
+             ele.onClick && ele.onClick();
+         });
+     }, false);
+     ```
 
-#### 合成事件的底层机制
+### 通信机制
+#### 父子
+
+- 父->子：**props**
+
+  ![父传子](/notes/imgs/react/父传子.jpg)
+
+- 子->父：父组件将一个函数作为props传给子组件，子组件通过this.props.xxx(args)传值，与vue中的$emit类似
+
+  ![子传父](/notes/imgs/react/子传父.jpg)
+
+#### 兄弟
+
+兄弟组件之间的传值，是通过父组件做的中转 ，流程为：**组件A** -- `传值` --> **父组件** -- `传值` --> **组件B**
+
+![兄弟组件传值](/notes/imgs/react/兄弟组件传值.jpg)
+
+#### 跨级
+
+**props层层传递**：组件嵌套过深时，不建议使用这种方式
+
+**context**
+
+- 局限性
+
+  - 在组件树中，如果中间某一个组件 ShouldComponentUpdate 中 return false ，会阻碍 context 的正常传值，导致子组件无法获取更新。
+
+  - 组件本身 extends React.PureComponent 也会阻碍 context 的更新。
+
+**[redux](#Redux)**
 
 ### 	JSX底层渲染机制
 
@@ -861,8 +994,783 @@ const FancyInput = forwardRef((props, ref) => {
    }
    ```
 
+
+
 ## Hooks
+
+**所有的Hook函数都只能在函数组件中使用，在类组件中会报错**
+
+### 常用Hook
+
+#### `useState` / `useReducer`  状态管理
+
+##### `useState`
+
+返回一个state，以及更新state的函数：`const [state, setState] = useState(initialState);`
+
+**注意：**
+
+1. 如果你的更新函数返回值与当前 state 完全相同，则随后的重渲染会被完全跳过。
+
+2. 与 class 组件中的 `setState` 方法不同，`useState` 不会自动合并更新对象.『官方建议多个值用多个`useState定义`』
+
+```js
+// 简单实现一个useState
+let _state;
+function useState(initialState) {
+    if (typeof _state === 'undefined') _state = typeof initialState === 'function' ? initialState() : initialState;
+    var setState = function (value) {
+        if (Object.is(value)) return;
+        _state = value;
+        // 通知视图更新
+    }
+    return [_state, setState];
+}
+```
+
+##### `useReducer`
+
+`useState`的替代方案。
+
+在某些场景下，`useReducer` 会比 `useState` 更适用，例如 state 逻辑较复杂且**包含多个子值**，或者下一个 state 依赖于之前的 state 等。并且，使用 `useReducer` 还能给那些会触发深更新的组件做性能优化，因为你可以向子组件传递 `dispatch` 而不是回调函数 。
+
+```js
+import {useReducer} from 'react';
+
+function App() {
+    const reducer = (state, action) => {
+        /* switch(action.type){
+            case 'add':
+                return state + 1;
+            case 'sub':
+                return state - 1;
+        } */
+        return {
+            ...state,
+            ...action
+        }
+    };
+    
+    const [count, countDispath] = useReducer(reducer, 1);
+    
+    return (
+        <div className="App">
+            {count}
+            <div>
+                <button onClick={()=>countDispath({type:'sub'})}>-</button>
+                <button onClick={()=>countDispath({type:'add'})}>+</button>
+            </div>
+        </div>
+    );
+}
+```
+
+#### `useEffect` / `useLayoutEffect`  周期函数
+
+- 第一个参数：函数，
+  - 该函数内的逻辑视为『`componentDidMount`』；
+  - 如果该函数有函数返回值，视为『`componentWillUnmount`』
+
+
+```js
+// useEffect返回一个清除函数
+useEffect(() => {
+  // componentDidMount 
+  const subscription = props.source.subscribe();
+  return () => {
+    // componentWillUnmount
+    subscription.unsubscribe();
+  };
+});
+```
+
+第二个参数
+
+- 没有第二个参数：组件的初始化和更新都会执行。『componentDidMount`  && `componentDidUpdate`』
+
+- 空数组：初始化调用一次之后不再执行。『componentDidMount`』
+
+- 有一个值：初始化时和该值改变时会执行。『`componentDidMount` && `componentDidUpdate`』
+
+- 有多个值：对比每个值，其中一个有变化时执行。『`componentDidMount` && `componentDidUpdate`』
+
+##### `useEffect` / `useLayoutEffect` 的区别
+
+`useEffect `的函数会在组件渲染到屏幕之后执行。`useLayoutEffect`则是在DOM结构更新后、渲染前执行，相当于有一个防抖效果
+
+```js
+// 在点击div的时候将value设为0，但在useEffect中又将其设为一个随机值。这样相当于value这个状态快速连续的变更了两次
+
+import { useState, useEffect, useLayoutEffect } from "react";
+import * as ReactDOM from "react-dom";
+
+function App() {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (value === 0) {
+      setValue(10 + Math.random() * 200);
+    }
+  }, [value]);
+  console.log("render", value);
+  return (
+    <div onClick={() => setValue(0)}>value: {value}</div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+`useEffect`一共执行了两次渲染，执行顺序：
+
+1. click setState （value）
+2. 虚拟 DOM 设置到真实 DOM 上
+3. 渲染
+4. 执行useEffect回调
+5. setState（value）
+6. 虚拟 DOM 设置到真实 DOM 上
+7. 渲染
+
+`useLayoutEffect`一共执行了**一次**渲染，执行顺序：
+
+1. click setState （value）
+2. 虚拟 DOM 设置到真实 DOM 上
+3. 执行useLayoutEffect回调
+4. setState （value）
+5. 虚拟 DOM 设置到真实 DOM 上
+6. 渲染
+
+#### `useRef`  使用Ref
+`const refContainer = useRef(initialValue);`
+
+##### 和createRef的区别
+
+- createRef会在组件每次渲染的时候重新创建
+- useRef只会在组件首次渲染时创建
+
+##### 作用于普通组件时
+
+作用于普通组件时，与createRef的用法是一样的
+
+```tsx
+import { Input, Button } from 'antd';
+import { useRef, createRef } from 'react';
+
+import type { InputRef } from 'antd';
+
+const RefDemo = () => {
+  const inputEL = useRef<InputRef>(null);
+  const inputEL2 = useRef<HTMLInputElement>(null);
+  const inputEL3 = createRef<HTMLInputElement>();
+
+  const getInput = () => {
+    console.log('antd DOM', inputEL.current?.input?.value);
+    console.log('原生 DOM', inputEL2.current?.value);
+    console.log('createRef', inputEL3.current?.value);
+  };
+
+  return (
+    <div>
+      <p>antd Input：<Input ref={inputEL} style={{width: 167}} /></p>
+      <p>原生 Input：<input type="text" ref={inputEL2} /></p>
+      <p>createRef Input：<input type="text" ref={inputEL3} /></p>
+      <p><Button onClick={getInput}>获取Input Value</Button></p>
+    </div>
+  );
+};
+
+export default RefDemo;
+```
+
+##### 调用子组件的方法/获取子组件
+
+需要用到两个方法 `useImperativeHandle` 和 `forwardRef`
+
+###### `forwardRef`
+
+> 引用传递（Ref forwading）是一种通过组件向子组件自动传递 **引用ref** 的技术。对于应用者的大多数组件来说没什么作用。但是对于有些重复使用的组件，可能有用。例如某些input组件，需要控制其focus，本来是可以使用ref来控制，但是因为该input已被包裹在组件中，这时就需要使用Ref forward来透过组件获得该input的引用。
+
+###### `useImperativeHandle`
+
+> useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值。
+>
+> 在大多数情况下，应当避免使用 ref 这样的命令式代码。
+>
+> useImperativeHandle 应当与 **forwardRef** 一起使用。
+
+`useImperativeHandle(ref, createHandle, [deps])`
+
+```tsx
+// 调用子组件的方法
+import React, { useRef, useImperativeHandle,forwardRef } from 'react';
+import ReactDOM from 'react-dom';
+
+const FancyInput = forwardRef((props, ref) => {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    }
+  }));
+
+  return <input ref={inputRef} type="text" />
+});
+
+const App = props => {
+  const fancyInputRef = useRef();
+
+  return (
+    <div>
+      <FancyInput ref={fancyInputRef} />
+      <button
+        onClick={() => fancyInputRef.current.focus()}
+      >父组件调用子组件的 focus</button>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, root);
+```
+
+```tsx
+// 获取子组件
+import React, { useRef,forwardRef } from 'react';
+import ReactDOM from 'react-dom';
+
+const FancyInput = forwardRef((props, ref) => (
+	<input ref={ref} type="text" value={props.children}/>
+));
+
+const App = props => {
+  const fancyInputRef = useRef();
+
+  return (
+    <div>
+      <FancyInput ref={fancyInputRef}>hhtest</FancyInput>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, root);
+```
+
+#### `useContext`
+如果需要在组件之间共享状态，可以使用useContext()。
+
+```tsx
+// const ThemeContext = React.createContext();
+
+//接收组件
+function Button() {
+	const {theme, toggle} = useContext(ThemeContext);
+  	return (
+        <button
+          onClick={toggle} //调用回调
+          style={{backgroundColor: theme}}
+        >
+          Toggle Theme
+        </button>
+  	);
+}
+
+// 等价于
+// Context.Consumer
+//接收组件
+function Button() {
+  return (
+    <ThemeContext.Consumer>
+      {({theme, toggle}) => (
+        <button
+          onClick={toggle} //调用回调
+          style={{backgroundColor: theme}}>
+          Toggle Theme
+        </button>
+      )}
+    </ThemeContext.Consumer>
+  );
+}
+```
+
+
+### 额外的Hook
+
+#### `useMemo`
+
+`useMemo(callback, [依赖项])`
+
+- 当某段逻辑中的数据在本次渲染没有变化时，不执行该逻辑
+
+```js
+// 类似于vue中的computed
+const data = useMemo(() => {
+    return x + y;
+}, [x, y])
+```
+
+- 避免不必要的渲染
+
+- 缓存和复用组件的子树：在复杂的组件结构中，某些子组件的渲染结果可能是固定的，不依赖于父组件的状态或属性。使用 `useMemo` 可以缓存和复用这些子组件的渲染结果，避免不必要的渲染和协调过程。『`React.memo`』
+
+  ```tsx
+  import { memo, useState } from "react";
+  
+  // 每次点击按钮都会执行渲染
+  const Child = () => {
+      console.log("=====RENDER Child");
+      return (
+          <div>Child</div>
+      )
+  }
+  
+  // 只有msg变化的时候才会执行渲染
+  const MemoChild = memo((props: any) => {
+      console.log("=====RENDER MemoChild");
+      return (
+          <div>MemoChild{props.msg}</div>
+      )
+  });
+  
+  export default function Memo() {
+      const [count, setCount] = useState(0);
+      const [msg, setMsg] = useState('hello');
+      const handleClick = (type: string) => {
+          type === 'count' && setCount(count+1);
+          type === 'msg' && setMsg(msg + 'hh');
+      }
+    return (
+      <>
+          <button onClick={() => handleClick('count')}>{count}</button>
+          <button onClick={() => handleClick('msg')}>{msg}</button>
+          <Child />
+          <MemoChild msg={msg} />
+      </>
+    )
+  }
+  ```
+
+#### `useCallback`
+
+用来创建React中的回调函数，该回调函数仅在某个依赖项改变时才会更新
+
+`useCallback(fn, deps)` 相当于 `useMemo(() => fn, deps)`。
+
+- 第二个参数：不指定时，每次都会更新；指定时，其中某个变化时才会更新
+
+```
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+- 组件第一次渲染，useCallback执行，创建一个函数“callback”，赋值给`memoizedCallback`
+
+- 组件后续每一次更新、判断依赖的状态值是否改变，如果改变，则重新创建新的函数堆，赋值给`memoizedCallback`; 但是如果依赖的状态没有更新与或者没有设置依赖，则`memoizedCallback`获取的一直是第一次创建的函数堆，不会创建新的函数出来
+- 或者说，基于useCallback，可以始终获取第一次创建函数的堆内存地址(或者说函数的引用)
+
+##### useMemo、useCallback的区别
+
+`useCallback`返回一个函数，当把它返回的这个函数作为子组件使用时，可以避免每次父组件更新时都重新渲染这个子组件；
+
+`useMemo`返回的的是一个值，用于避免在每次渲染时都进行高开销的计算。
+
+### 自定义Hook
+
+使用自定义Hook可以将某些组件逻辑提取到可重用的函数中
+
+```js
+// 支持对象部分状态修改的useState
+const useHHState = (initiaValue) => {
+    const [state, setState] = useState(initiaValue);
+    const setHHState = (value) => {
+        setState({
+            ...state,
+            ...value
+        })
+	}
+    return [state, setHHState];
+}
+```
+
+## 样式私有化
+
+### CSSModules
+
+```tex
+// Test.module.scss
+.test {} // 最终会显示为 Test_test__hash【唯一编码】
+
+// Test.tsx
+const Test = () => (
+	<div className={Test.test}></div>
+)
+```
+
+### ReactJSS
+
+```shell
+yarn add react-jss
+```
+
+```tsx
+import { createUseStyles } from "react-jss"
+
+const useStyles = createUseStyles({
+    list: {
+        background: 'lightblue',
+        width: '300px'
+    },
+
+    item: {
+        fontSize: '20px',
+        color: 'white',
+        '&:hover': {
+            color: 'green'
+        }
+    }
+});
+
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export default function Jss() {
+    const {list, item} = useStyles();
+    return (
+        <div className={list}>
+            {arr.map((num: number) => (<div className={item}>{num}</div>))}
+        </div>
+    )
+}
+
+// 编译结果
+/*<div class="list-B-2-1'>
+    <div class="item-0-2-2">1</div>
+    <div class="item--2-2">2</div>
+    <div class="item-B-2-2">3</div>
+    <div class="item-0-2-2">4</div>
+    <div class="item-0-2-2">5</div>
+    <div class="item-0-2-2">6</div>
+    <div class="item-0-2-2">7</div>
+    <div class="item-0-2-2">8</div>
+    <div class="item-0-2-2">9</div>
+</div>*/
+```
+
+基于createUseStyles方法，构建组件需要的样式; 返回结果是一个自定义Hook函数
+
+对象中的每个成员就是创建的样式类名
+
++ 可以类似于less等预编译语言中的“嵌套语法”，给其后代/伪类等设置样式!!自定义Hook执行，返回一个对象，对象中包含:
++ 我们创建的样式类名，作为属性名
++ 编译后的样式类名唯一，作为属性值{box:'box-0-2-1'，title:'title-0-2-2'，list:list-0-2-3']
+
+### styled-components
+
+```sh
+yarn add styled-components
+```
+
+```tsx
+import styled from 'styled-components';
+
+const TestStyle = styled.div`
+	.list {
+        background: lightblue;
+        width: 300px;
+    },
+
+    .item {
+        font-size: 20px;
+        color: white;
+        &:hover {
+            color: green;
+        }
+    }
+ `
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export default function Test() {
+    return (
+        <TestStyle>
+            <div className="list">
+                {arr.map((num: number) => (<div className="item" key={num}>{num}</div>))}
+            </div>
+        </TestStyles>
+    )
+}
+// 编译结果
+/*<div class="sc-gswPWN gjcGrf">
+    <div class="list">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+    </div>
+</div>*/
+```
+
+
+
+## Redux
+
+### 基础
+
+#### store
+
+![image-20201222150802906](/notes/imgs/react/image-20201222150802906.png)
+
+```js
+import { createStore } from "redux";
+import { reducer } from "./reducer"
+
+store = createStore(reducer)
+```
+
+#### action
+
+- actionType
+
+  ```js
+  export const ADD_TYPE = "ADD_TYPE";
+  ```
+
+- index
+
+  ```js
+  import * as actionType from "./actionType";
+  
+  export const add = (value) => {
+    return {
+      type: actionType.ADD_TYPE,
+      title: "这是 ADD_TYPE action",
+      value,
+    };
+  };
+  ```
+
+
+#### reducer
+
+```js
+import * as actionType from "../actionType";
+const initState = {
+  title: "默认值",
+};
+export const reducer = (state = initState, action) => {
+  let newState = {};
+  switch (action.type) {
+    case actionType.ADD_TYPE:
+      newState = Object.assign({}, state, action);
+      return newState;
+    default:
+      return state;
+  }
+};
+```
+### 使用
+
+```js
+// store可以通过context传递给子组件
+
+import {
+  add
+} from './actions'
+
+// 打印初始状态
+console.log(store.getState())
+
+// 每次 state 更新时，打印日志
+const unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
+
+// 发起action
+store.dispatch(add('Learn about actions'))
+
+// 取消监听
+unsubscribe();
+```
+
+**Redux中的Store修改之后，React不会自动监听，也就是说页面不会重新渲染，需要手动进行监听**
+
+```js
+// 一般在最外层父组件中进行监听
+componentDidMount(){
+	store.subscribe(()=>{
+		this.setState({})
+	})
+}
+```
+
+### 项目中的拆分和合并
+
+![image-20230807143038909](/notes/imgs/react/redux多个reducer.png)
+
+**创建store**
+
+```js
+// 合并reducer
+import { combineReducers } from 'redux';
+import voteReducer from './vote/reducer';
+import personReducer from './person/reducer';
+
+export default combineReducers({
+    vote: voteReducer,
+    person: personReducer
+})
+
+// 创建store
+import { createStore } from 'redux';
+import reducer from '@/store';
+const store = createStore(reducer);
+```
+
+**派发任务**
+
+**如果派发任务不指定执行哪个reducer，dispatch时会去每个reducer中找一个，执行所有和派发行为标识匹配的逻辑执行一次**
+
+在 `actionType` 文件中定义所有的行为标识，在`action` 和 `reducer`文件中都去该文件中获取
+
+```js
+export const ADD_TYPE = "ADD_TYPE";
+```
+
+```js
+import * as TYPES from './actionType'
+export const reducer = (state, action) => {
+  switch (action.type) {
+    case actionType.ADD_TYPE:
+          // ...
+          break;
+    default:
+      return state;
+  }
+};
+```
+
+```js
+import * as actionType from "./actionType";
+export const add = (value) => {
+  return {
+    type: actionType.ADD_TYPE,
+    value,
+  };
+};
+```
+
+### 底层原理
+
+```js
+export const createStore = (reducer: any) => {
+    if (typeof reducer !== 'function') throw new TypeError('createStore param [reducer] must be a function');
+    // 公共状态
+    let state: any = undefined;
+    // 事件池
+    const listeners: any[] = [];
+
+    // 获取state，直接返回
+    const getState = () => state;
+    
+    // 向事件池中加入让组件更新的方法
+    const subscribe = (listener: any) => {
+        if (typeof listener !== 'function') throw new TypeError('Redux function [dispatch] param must be a function');
+        // 去重
+        if (!listeners.includes(listener)) listeners.push(listener);
+        
+        // 返回一个从事件池中，移除方法的函数
+        return function unsubscribe() {
+            const index = listeners.push(listener);
+            listeners.splice(index, 1);
+        }
+    };
+    
+    // 派发任务通知 reducer 执行
+    const dispatch = (action: any) => {
+        // 执行reducer，替换公共状态
+        state = reducer(state, action);
+        // 执行事件池中的方法
+        listeners.forEach(listener => listener());
+
+        return action;
+    }
+
+    // 默认进行一次didpatch派发，目的是给公共容器中的状态赋初始值
+    dispatch({type: Symbol()});
+
+    return {
+        getStatus,
+        dispatch,
+        subscribe
+    };
+}
+```
+
+```ts
+export const combineReducers: (reducers: {[key: string]: any}) => any = (reducers) => {
+    const reducerKeys = Object.keys(reducers)
+
+    // dispatch时调用的方法
+    return function combine(state: {[key: string]: any} = {}, action: any) {
+        let nextState: any = {};
+        // 去执行每个reducer中的逻辑
+        reducerKeys.forEach(key =>{
+            const reducer = reducers[key];
+            // state的格式为{a: reducerA中的数据, b:reducerB中的数据, ...}
+            if (typeof reducer === 'function') nextState[key] = reducer(state[key], action);
+        });
+        return nextState;
+    }
+}
+```
+
+
+
+## React-Redux
+
+### 使用
+
+#### 入口文件 index.tsx
+
+```tsx
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import todoApp from './reducers'
+import App from './components/App'
+
+let store = createStore(todoApp)
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
+```
+
+### 与`Redux`对比
+
+### `Redux`中间件
+
+### 源码
+
+
+
+## Redux-toolkit
+
+
+
+## Mobx
+
+
 
 ## React-Router
 
-## Redux
+
+
+## dva

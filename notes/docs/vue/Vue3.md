@@ -13,7 +13,7 @@
 
 ```
 // html
-<p v-for="item in renderData" :key="item.name" ref="handleNodes">{{item.name}}</p>
+<p v-for="item in renderData" :key="item.name" :ref="handleNodes">{{item.name}}</p>
 
 // js
 handleNodes(el) {
