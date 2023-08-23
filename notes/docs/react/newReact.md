@@ -1664,7 +1664,7 @@ export const add = (value) => {
 
 ### 底层原理
 
-```js
+```ts
 export const createStore = (reducer: any) => {
     if (typeof reducer !== 'function') throw new TypeError('createStore param [reducer] must be a function');
     // 公共状态
