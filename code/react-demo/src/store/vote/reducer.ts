@@ -9,8 +9,9 @@
 const voteReducer = (state = {count: 0}, action: {type: string, [key: string]: any}) => {
     switch (action.type) {
         case 'add':
-            state.count++;
-            return state;
+            return {
+                count: state.count + 1
+            };
         default:
             return state;
     }

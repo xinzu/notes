@@ -897,17 +897,159 @@ const FancyInput = forwardRef((props, ref) => {
 
 #### 跨级
 
-**props层层传递**：组件嵌套过深时，不建议使用这种方式
+##### props层层传递
 
-**context**
+​	组件嵌套过深时，不建议使用这种方式
+
+##### Pubsub
+
+```tsx
+// A.js  父组件
+import React, { Component } from "react";
+import PubSub from "pubsub-js";
+import B from "./B";
+
+export default class A extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: "none",
+    };
+  }
+  componentDidMount() {
+    this.pubsub_token = PubSub.subscribe(
+      "PubSubmessage",
+      function (topic, message) {
+        console.log("topic", topic);
+        this.setState({
+          message,
+        });
+      }.bind(this)
+    );
+  }
+  componentWillUnmount() {
+    PubSub.unsubscribe(this.pubsub_token);
+  }
+  render() {
+    return (
+      <div>
+        <B></B>
+        <div style={{ marginTop: "1.5em" }}>{this.props.children}</div>
+        <div style={{ marginTop: "1.5em" }}>
+          page A message:{this.state.message}
+        </div>
+      </div>
+    );
+  }
+}
+
+
+// B.js  子组件
+import React, { Component } from "react";
+import PubSub from "pubsub-js";
+import C from "./C";
+
+export default class B extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      increase: "B页面传值---------increase",
+      decrease: "B页面传值---------decrease",
+    };
+  }
+  buttonIncrease() {
+    PubSub.publish("PubSubmessage", this.state.increase);
+  }
+  buttonDecrease() {
+    PubSub.publish("PubSubmessage", this.state.decrease);
+  }
+  render() {
+    return (
+      <div style={{ color: "red" }}>
+        Page B: font color is Red
+        <br />
+        This is Page B. Some state changes:
+        <button onClick={this.buttonIncrease.bind(this)}>Increase</button>
+        <button onClick={this.buttonDecrease.bind(this)}>Decrease</button>
+        <C></C>
+      </div>
+    );
+  }
+}
+
+// C.js  孙子组件
+import React, { Component } from "react";
+import PubSub from "pubsub-js";
+export default class C extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      increase: "C页面传值---------increase",
+      decrease: "C页面传值---------decrease",
+    };
+  }
+  buttonIncrease() {
+    PubSub.publish("PubSubmessage", this.state.increase);
+  }
+  buttonDecrease() {
+    PubSub.publish("PubSubmessage", this.state.decrease);
+  }
+  render() {
+    return (
+      <div>
+        This is Page C. Some state changes:
+        <button onClick={this.buttonIncrease.bind(this)}>Increase</button>
+        <button onClick={this.buttonDecrease.bind(this)}>Decrease</button>
+      </div>
+    );
+  }
+}
+```
+
+##### context
 
 - 局限性
 
   - 在组件树中，如果中间某一个组件 ShouldComponentUpdate 中 return false ，会阻碍 context 的正常传值，导致子组件无法获取更新。
-
   - 组件本身 extends React.PureComponent 也会阻碍 context 的更新。
+  
+  ```tsx
+  // ThemeContext.ts
+  import React from 'react';
+  epoxrt default React.createContext();
+  
+  // App.tsx
+  import ThemeContext from 'ThemeContext';
+  import Child from './components/Child';
+  export default const App = () => {
+      const globalData = {
+          name: 'hh'
+      }
+      return (
+          <ThemeContext.Provider value={globalData}><Child /></ThemeContext.Provider>
+      )
+  }
+  
+  // Child.tsx
+  import ThemeContext from '@/ThemeContext'
+  import { useContext } from 'react';
+  
+  export default function Context() {
+    /* return (
+      <ThemeContext.Consumer>
+          {value => (
+              <div>{value.name}</div>
+          )}
+      </ThemeContext.Consumer>
+    )*/
+      const {name} = useContext(ThemeContext);
+    	return (
+          <div>{name}</div>
+    	);
+  }
+  ```
 
-**[redux](#Redux)**
+##### [store](#Redux) 
 
 ### 	JSX底层渲染机制
 
@@ -1727,45 +1869,425 @@ export const combineReducers: (reducers: {[key: string]: any}) => any = (reducer
 }
 ```
 
+### `Redux`中间件
+
+#### 中间件的触发时机
+
+Redux 中间件执行时机：在 dispatching action 和 到达 reducer 之间。
+
+- 没有中间件：dispatch(action) => reducer
+
+![redux中间件](/notes/imgs/react/edux中间件之前.png)
+
+- 
+  使用中间件：dispatch(action) => 执行中间件代码 => reducer
+
+
+![redux中间件](/notes/imgs/react/edux中间件之后.png)
+
+#### 使用
+
+```ts
+export default createStore(reducer, applyMiddleware(reduxLogger))
+```
+
+#### 常用的中间件
+
+`redux-logger`：每一次派发，在控制台输出派发日志『内容：之前的状态、派发的行为、派发后的状态』
+
+![image-20230825160228794](/notes/imgs/react/redux-logger.png)
+
+`redux-thunk` / `redux-promise`：实现异步派发 
+
+```ts
+const delay = () => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(null)
+        }, 1000);
+    });
+}
+// redux-thunk: ！！！需要修改action的写法
+export const thunkAction = (info: any) => {
+    return async(dispatch: any) => {
+        await delay();
+        // thunk的第二次派发是手动触发的
+        dispatch({
+            type: 'login',
+            info
+        })
+    }
+}
+
+// redux-promise
+export const promiseAction = async (info: any) => {
+    await delay();
+    // promise的第二次派发是自动触发的
+    return {
+        type: 'login',
+        info
+    }
+}
+```
+
+![image-20230825163604308](/notes/imgs/react/redux-thunk.png)
+
+![image-20230825164053336](/notes/imgs/react/redux-promise.png)
+
+`redus-saga`
+
 
 
 ## React-Redux
+
+> 简化`redux`的操作
 
 ### 使用
 
 #### 入口文件 index.tsx
 
 ```tsx
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import todoApp from './reducers'
-import App from './components/App'
+import { Provider } from "react-redux"
+import store from '@/store';
+import Child from './Child'
 
-let store = createStore(todoApp)
-
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-)
+export default function ReactRedux() {
+  return (
+    <Provider store={store}>
+        <Child />
+    </Provider>
+  )
+}
 ```
 
-### 与`Redux`对比
+#### Child.tsx
 
-### `Redux`中间件
+子组件获取store的方法`connect(mapStateToProps, mapDispatchToProps)(要渲染的组件)`
 
-### 源码
+* mapStateToProps：可以获取到redux中所有模块的公共状态
+
+* mapDispatchToProps：把需要派发的任务当作属性传递给组件
+
+  ```js
+  // mapDispatchToprops
+  function mapDispatchToprops(dispatch) {
+  	// dispatch里面的add是action里面定义的add
+  	add: value => dispatch(add(value))
+  }
+  
+  // mapDispatchToprops简写
+  let mapDispatchToprops = {
+  	add
+  }
+  ```
+
+```tsx
+import { connect } from 'react-redux';
+
+import { connect } from 'react-redux';
+import { add } from '@/store/vote/action';
+import { login } from '@/store/person/action';
+
+/*
+	state = {
+		vote: {count:0},
+		person: {info: null}
+	}
+*/
+
+import { connect } from 'react-redux';
+import { add } from '@/store/vote/action';
+import { login } from '@/store/person/action';
+
+const Child = (props: any) => {
+    const {add, login, vote: {count}, person: {info}} = props;
+    console.log("========RENDER=======")
+    return (
+        <>
+            <div>=================react-redux============</div>
+            <div>{count}</div>
+            <div>{info ? info.name : 'info为null'}</div>
+            <div onClick={() => {
+                add();
+                login({name: 'hh-hh'});
+            }}>change store state</div>
+        </>
+    )
+}
+
+export default connect(
+    (state) => state,
+    {add, login}
+)(Child);
+```
+
+### 底层原理
+
+**内置一个全局上下文**
+
+```js
+import React, { useContext, useState, useEffect, useMemo } from 'react';
+import { bindActionCreators } from 'redux';
+
+// 定义一个全局上下文
+const Context = React.createContext({});
+
+// Provider组件
+export function Provider(props) {
+    const { store, children } = props;
+    return (<Context.Provider value={{ store }}>
+        {children}
+    </Context.Provider>)
+}
+
+// connect()(Component)
+export function connect(mapStateToPros, mapDispatchToProps) {
+    if (!mapStateToPros) mapStateToPros = () => ({});
+    if (!mapDispatchToProps) mapDispatchToProps = (dispatch) => ({ dispatch });
+
+    // Component 最终要渲染的组件
+    return function currying(Component) {
+        // HOC connect()(Component)执行后返回的组件
+        return function HOC(props) {
+            // 获取上下文中的store
+            const { store } = useContext(Context);
+            const { getState, dispatch, subscribe } = store;
+           
+            // 组件更新
+            const [, forceUpdate] = useState(0);
+            useEffect(() => {
+                const unsubscribe = subscribe(() => {
+                    forceUpdate(+new Date());
+                });
+                return unsubscribe;
+            }, [])
+
+            const state = getState();
+            // useMomo做优化，只有state变化时更新stateProps
+            const stateProps = useMemo(() => mapStateToPros(state), [state]);
+            
+            const dispatchProps = 
+                  typeof mapDispatchToProps === 'function' ? 
+                  	mapDispatchToProps(dispatch) : 
+            		bindActionCreators(mapStateToPros, dispatch);
+            /*
+            	bindActionCreators方法将传入的对象 {add, login} 
+            	转为
+            	{
+            		add: (count) => dispatch(add(count)),
+            		login: (info) => dispatch(login(info))
+            	}
+            */
+
+            return <Component
+                {...props}
+                {...stateProps}
+                {...dispatchProps}
+            ></Component >
+        }
+    }
+}
+```
 
 
 
-## Redux-toolkit
+## Redux-toolkit（RTK）
+
+`Redux`中的 `createStore` 方法已弃用，解决方案：
+
+1.  `import { legacy_createStore as createStore } from 'redux'`
+2.  redux-toolkit
+
+### 安装
+
+```shell
+npm i @reduxjs/toolkit
+```
+
+### 使用
+
+#### 创建切片(reducer)
+
+`createSlice`
+
+```js
+import {createSlice} from '@reduxjs/toolkit';
+
+const vote = createSlice({
+     // 命名空间，在调用action的时候会默认的设置为action的前缀
+    name: 'vote',
+    // 初始值
+    initialState: {
+        count: 1,
+    },
+    // 这里的属性会自动的导出为actions，在组件中可以直接通过dispatch进行触发
+    reducers: {
+        // 传递的数据都存在action.payload中
+        increment(state, action) {
+            const { payload } = action;
+            state.count = state.count + payload.step; // 内置了immutable
+        },
+        decrement(state) {
+            state.count -= 1;
+        },
+    },
+})
+
+export default vote.reducer; // 导出reducer，在创建store时使用到
+```
+
+#### 创建store
+
+`configureStore`
+
+```js
+import {configureStore} from '@reduxjs/toolkit';
+import reduxThunk from 'redux-thunk';
+import reduxLogger from 'redux-logger';
+
+import vote from './vote';
+
+const store = configureStore({
+    reducer: {
+        vote
+    },
+    // 使用中间件，如果不指定任何中间件，默认集成redux-thunk
+    // middleware: [],
+    // 但是一旦设置，会整体替换默认值
+    middleware: [reduxThunk, reduxLogger]
+})
+
+// 导出actions
+export const { increment, decrement } = counterSlice.actions;
+// 处理异步请求
+export const asyncIncrement = (payload) => (dispatch) => {
+    setTimeout(() => {
+        dispatch(increment(payload));
+    }, 2000);
+};
+
+export default store;
+```
+
+#### 使用store
+
+`useSelector`：获取公共状态
+
+`useDispatch`：进行任务派发
+
+```tsx
+// Index.tsx
+import { Provider } from 'react-redux';
+import store from '../index';
+import Child from './Child';
+
+export default function index() {
+  return (
+    <Provider store={store}>
+        <Child />
+    </Provider>
+  )
+}
+
+// Child.tsx
+import { useSelector, useDispatch } from 'react-redux';
+import {increment, decrement, asyncIncrement} from '../vote';
+
+export default function Child() {
+    const voteState = useSelector((state: any) => state.vote);
+    const dispatch = useDispatch();
+    return (
+        <>
+            <div>{voteState.count}</div>
+            <button onClick={() => dispatch(increment(2))}>增加2</button>
+            <button onClick={() => dispatch(asyncIncrement(1))}>异步增加1</button>
+            <button onClick={() => dispatch(decrement())}>减少</button>
+        </>
+    )
+}
+```
+
+![image-20230825175550150](/notes/imgs/react/rtk.png)
 
 
 
 ## Mobx
+
+### Mobx-Redux-lite
+
+#### 安装
+
+```shell
+npm install mobx mobx-react-lite
+```
+
+#### 用法
+
+```js
+// store/menu.ts
+// 创建一个store
+import {
+    makeAutoObservable,
+    runInAction
+} from 'mobx';
+import { MenuItem } from './types'
+
+class MenuStore {
+    menuData: MenuItem[] = [];
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    setMenuData(data: MenuItem[]) {
+        runInAction(() => {
+            this.menuData = data;
+        })
+    }
+}
+const menuStore = new MenuStore();
+export default menuStore;
+
+// App.vue
+// 使用observer监听store
+import DefaultRouter from '@/router'; 
+import {
+    useRoutes, useNavigate, useLocation  
+} from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import PubSub from 'pubsub-js';
+import { useEffect } from 'react';
+
+function App() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const whiteList = ['/', '/overview']
+        if (!whiteList.includes(location.pathname)) navigate('/')
+    }, [])
+
+    // 监听当前 location改变
+    // topic: string, route: string
+    PubSub.subscribe('changeRoute',(topic: string, route: string) => {
+        navigate(route, { replace: true })
+    });
+
+    return useRoutes(DefaultRouter);
+}
+// 将 store 对象传递给组件
+export default observer(App);
+
+
+// 使用store
+import menuStore from '@/store/menu';
+menuStore.setMenuData(res);
+```
+
+#### 创建可观察状态
+
+- makeObservable
+- makeAutoObservable：自动推断所有属性
 
 
 

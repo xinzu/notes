@@ -5,14 +5,16 @@
  * @LastEditors  : yanhuan
  * @LastEditTime : 2023-08-07 14:17:53
  */
-import {combineReducers, createStore} from '@/reduxCore';
+import {applyMiddleware, combineReducers, legacy_createStore  as createStore} from 'redux';
 import voteReducer from './vote/reducer';
 import personReducer from './person/reducer';
+import reduxLogger from 'redux-logger';
+import reduxThunk from 'redux-thunk';
+import reduxPromise from 'redux-promise';
 
 const reducer = combineReducers({
     vote: voteReducer,
     person: personReducer
 })
-console.log(reducer)
 
-export default createStore(reducer)
+export default createStore(reducer, applyMiddleware(reduxLogger, reduxThunk, reduxPromise))

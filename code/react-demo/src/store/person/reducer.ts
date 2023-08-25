@@ -8,8 +8,9 @@
 const personReducer = (state= {info: null}, action: {type: string, [key: string]: any}) => {
     switch (action.type) {
         case 'login':
-            state.info = action.info;
-            return state;
+            return {
+                info: action.info
+            };
         default:
             return state;
     }

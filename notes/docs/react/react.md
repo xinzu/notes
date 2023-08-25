@@ -1324,9 +1324,9 @@ export const { increment, decrement } = counterSlice.actions;
 
 // 内置了thunk插件，可以直接处理异步请求
 export const asyncIncrement = (payload) => (dispatch) => {
-     setTimeout(() => {
-     dispatch(increment(payload));
-      }, 2000);
+    setTimeout(() => {
+        dispatch(increment(payload));
+    }, 2000);
 };
 
 export default counterSlice.reducer; // 导出reducer，在创建store时使用到

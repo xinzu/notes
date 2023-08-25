@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { flushSync } from 'react-dom';
 
 import store from '@/store';
-console.log(store)
-
 export default class ClassTest extends Component {
     state = {
         x: 1,
