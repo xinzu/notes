@@ -80,14 +80,17 @@ module.exports = {
                 title: 'vue',
                 children: [
                     {
-                        title: 'vue2',
-                        path: '/vue/vue.md'
+                        title: 'Vue2',
+                        path: '/vue/Vue2.md'
                     }, {
-                        title: 'vue2的一些高级用法',
+                        title: 'Vue2的一些高级用法',
                         path: '/vue/Vue的一些高级用法.md',
                     }, {
-                        title: 'vue3',
+                        title: 'Vue3',
                         path: '/vue/Vue3.md',
+                    }, {
+                        title: 'Vue-store',
+                        path: '/vue/Vue-store.md',
                     }, {
                         title: 'vue-router',
                         path: '/vue/Vue-Router.md',
@@ -99,6 +102,14 @@ module.exports = {
                     {
                         title: 'react',
                         path: '/react/newReact.md',
+                    },
+                    {
+                        title: 'react-store',
+                        path: '/react/react-store.md',
+                    },
+                    {
+                        title: 'react-router',
+                        path: '/react/react-router.md',
                     },
                     {
                         title: 'react-native',

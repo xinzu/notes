@@ -10,8 +10,8 @@ import { add } from '@/store/vote/action';
 import { prociseAction } from '@/store/person/action';
 
 const Child = (props: any) => {
+    console.log(props.subscribe);
     const {add, prociseAction, vote: {count}, person: {info}} = props;
-    console.log("========RENDER=======")
     return (
         <>
             <div>=================react-redux============</div>

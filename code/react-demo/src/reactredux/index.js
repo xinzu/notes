@@ -41,7 +41,7 @@ export function connect(mapStateToPros, mapDispatchToProps) {
             const dispatchProps =
                 typeof mapDispatchToProps === 'function' ?
                     mapDispatchToProps(dispatch) :
-                    bindActionCreators(mapStateToPros, dispatch);
+                    bindActionCreators(mapDispatchToProps, dispatch);
             /*
                 bindActionCreators方法将传入的对象 {add, login} 
                 转为

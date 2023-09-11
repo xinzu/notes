@@ -9,7 +9,7 @@
 import createElement from '@/jsxCore/createElement'
 import render from '@/jsxCore/render'
 
-import Test from '@/components/Test'
+import Test from '@/components/JsxTest'
 import ClassTest from '@/components/ClassTest'
 
 const jsxObj = createElement(

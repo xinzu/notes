@@ -4,14 +4,14 @@ import '@/assets/css/index.css';
 // import ClassTest from './components/ClassTest';
 // import Memo from './components/Memo';
 // import Styled from './components/Styled';
-// import Context from './components/Context';
-// import ThemeContext from './ThemeContext';
-// import ReactRedux from './reactredux/Index';
-import RtkTest from './rtkStore/components/Index';
+// import ReactDemo from './redux/components/Index';
+// import ReactRedux from './reactredux/components/Index';
+// import RtkTest from './rtkStore/components/Index';
+// import MobxTest5 from './mobx5/Index';
 
 // import Jss from './components/Jss';
-// import jsxhandler from '@/jsxCore/jsxhandler';
 
+// import jsxhandler from '@/jsxCore/jsxhandler';
 // jsxhandler()
 
 const root = ReactDOM.createRoot(
@@ -20,9 +20,6 @@ const root = ReactDOM.createRoot(
 // const title = <h2>我是标题</h2>;
 // const content = <p>我是内容</p>;
 
-// const data = {
-//     name: 'hh'
-// }
 root.render(
    <>
         {/* <Test content={content} titleWrap={title}>
@@ -32,8 +29,9 @@ root.render(
         {/* <Jss /> */}
         {/* <Styled /> */}
         {/* <ClassTest /> */}
-        {/* <ThemeContext.Provider value={data}><Context /></ThemeContext.Provider> */}
+        {/* <ReactDemo /> */}
         {/* <ReactRedux /> */}
-        <RtkTest />
+        {/* <RtkTest /> */}
+        {/* <MobxTest5 /> */}
    </>
 );

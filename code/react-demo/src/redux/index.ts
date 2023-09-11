@@ -11,7 +11,7 @@ export const createStore = (reducer: any) => {
     let state: any = undefined;
     const listeners: any[] = [];
 
-    const getStatus = () => state;
+    const getState = () => state;
     const subscribe = (listener: any) => {
         if (typeof listener !== 'function') throw new TypeError('Redux function [dispatch] param must be a function');
         if (!listeners.includes(listener)) listeners.push(listener);
@@ -31,7 +31,7 @@ export const createStore = (reducer: any) => {
     dispatch({type: Symbol()});
 
     return {
-        getStatus,
+        getState,
         dispatch,
         subscribe
     };

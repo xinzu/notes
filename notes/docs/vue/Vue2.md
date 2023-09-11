@@ -747,23 +747,3 @@ router.push({ path: 'register', query: { plan: 'private' }})
 #### 过渡效果
 
 #### 滚动行为
-
-## vuex
-
-### 组件间通信方式
-
-#### 父子
-
-1. props和$emit
-2. $attrs，$listener
-
-#### 跨级
-
-1. 通过父子组件通信方式，层层传递
-2. 
-
-#### 非嵌套层级关系
-
-##### 兄弟
-
-##### 其他
