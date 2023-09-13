@@ -1760,6 +1760,11 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.8"
 
+"@remix-run/router@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.8.0.tgz#e848d2f669f601544df15ce2a313955e4bf0bafc"
+  integrity sha512-mrfKqIHnSZRyIzBcanNJmVQELTnX+qagEDlcKO90RgRBVOZGSGvZKeDihTRfWcqoDn5N/NkUcwWTccnpN18Tfg==
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"
@@ -6959,24 +6964,22 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.6"
 
-mobx-react-lite@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-4.0.4.tgz#eee3c55dfa6841365d5a7764971c456db12570fb"
-  integrity sha512-68uNYvQC/5Dazs3sIBv+bnpzRwcWde8y4ujHiLizhq8yeQtJ2tlNUGSh4r40gyE5M0utACIofBDsAj2hplcovQ==
-  dependencies:
-    use-sync-external-store "^1.2.0"
+mobx-react-lite@^2.2.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-2.2.2.tgz#87c217dc72b4e47b22493daf155daf3759f868a6"
+  integrity sha512-2SlXALHIkyUPDsV4VTKVR9DW7K3Ksh1aaIv3NrNJygTbhXe2A9GrcKHZ2ovIiOp/BXilOcTYemfHHZubP431dg==
 
-mobx-react@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-9.0.1.tgz#f03fd8a2f009af260971a558acc29c0e04808e26"
-  integrity sha512-0idiElBgNMJg20YqGgHvYEnlqIJpPDQaOkxj2dHJIZeqCvUh+zBkBkMkpUFw/uEd1OdPUvT0y+AFBqsWIUAXww==
+mobx-react@6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.3.1.tgz#204f9756e42e19d91cb6598837063b7e7de87c52"
+  integrity sha512-IOxdJGnRSNSJrL2uGpWO5w9JH5q5HoxEqwOF4gye1gmZYdjoYkkMzSGMDnRCUpN/BNzZcFoMdHXrjvkwO7KgaQ==
   dependencies:
-    mobx-react-lite "^4.0.4"
+    mobx-react-lite "^2.2.0"
 
-mobx@^6.10.2:
-  version "6.10.2"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.10.2.tgz#96e123deef140750360ca9a5b02a8b91fbffd4d9"
-  integrity sha512-B1UGC3ieK3boCjnMEcZSwxqRDMdzX65H/8zOHbuTY8ZhvrIjTUoLRR2TP2bPqIgYRfb3+dUigu8yMZufNjn0LQ==
+mobx@5.15.7:
+  version "5.15.7"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.15.7.tgz#b9a5f2b6251f5d96980d13c78e9b5d8d4ce22665"
+  integrity sha512-wyM3FghTkhmC+hQjyPGGFdpehrcX1KOXsDuERhfK2YbJemkUhEB+6wzEN639T21onxlfYBmriA1PFnvxTUhcKw==
 
 ms@2.0.0:
   version "2.0.0"
@@ -8224,6 +8227,21 @@ react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.11.0.tgz#77198b944733f0f1f1a90e791de4541f9f074046"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
+
+react-router-dom@^6.15.0:
+  version "6.15.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.15.0.tgz#6da7db61e56797266fbbef0d5e324d6ac443ee40"
+  integrity sha512-aR42t0fs7brintwBGAv2+mGlCtgtFQeOzK0BM1/OiqEzRejOZtpMZepvgkscpMUnKb8YO84G7s3LsHnnDNonbQ==
+  dependencies:
+    "@remix-run/router" "1.8.0"
+    react-router "6.15.0"
+
+react-router@6.15.0:
+  version "6.15.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.15.0.tgz#bf2cb5a4a7ed57f074d4ea88db0d95033f39cac8"
+  integrity sha512-NIytlzvzLwJkCQj2HLefmeakxxWHWAP+02EGqWEZy+DgfHHKQMUoBBjUQLOtFInBMhWtb3hiUy6MfFgwLjXhqg==
+  dependencies:
+    "@remix-run/router" "1.8.0"
 
 react-scripts@5.0.1:
   version "5.0.1"
@@ -9651,7 +9669,7 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
+use-sync-external-store@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==

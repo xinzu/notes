@@ -657,7 +657,7 @@ vite官网：https://vitejs.cn
   - 真正的按需编译，不再等待整个应用编译完成。
 - 传统构建 与 vite构建对比图
 
-<img src="https://cn.vitejs.dev/assets/bundler.37740380.png" style="width:500px;height:280px;float:left" /><img src="https://cn.vitejs.dev/assets/esm.3070012d.png" style="width:480px;height:280px" />
+<img src="/notes/imgs/vue/打包.png" alt="打包" style="zoom: 33%;" /><img src="/notes/imgs/vue/vite打包.png" alt="打包" style="zoom: 33%;" />
 
 ```bash
 ## 创建工程
@@ -1013,7 +1013,7 @@ npm run dev
   ```
 
 ### 8.生命周期
-![vue3生命周期](/notes/img/vue3lifecycle.png)
+![vue3生命周期](/notes/imgs/vue/vue3lifecycle.png)
 
 - Vue3.0中可以继续使用Vue2.x中的生命周期钩子，但有有两个被更名：
   - ```beforeDestroy```改名为 ```beforeUnmount```

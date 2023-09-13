@@ -1011,7 +1011,7 @@ export default class MobxStore {
 - `mobx-react-lite`：仅支持函数组件
 - `mobx-react`：既支持函数组件也支持类组件
 
-*只使用一个`observer`即可*
+*只使用一个`observer`即可，所有视图展示用到 store 数据的组件，都需要用observer包裹*
 
 ### 安装
 

@@ -1,8 +1,6 @@
-## vue2
+## 基础
 
-### 基础
-
-#### vue对象选项
+### vue对象选项
 
 ```
 let vm = new Vue({
@@ -38,9 +36,9 @@ let vm = new Vue({
 })
 ```
 
-##### DOM
+#### DOM
 
-###### el
+##### el
 
 > 如果 `render` 函数和 `template` property 都不存在，挂载 DOM 元素的 HTML 会被提取出来用作模板
 
@@ -52,7 +50,7 @@ let vm = new Vue({
 
   实例挂载点
 
-###### template
+##### template
 
 > 如果 Vue 选项中包含`render`函数，该模板将被忽略。
 
@@ -62,24 +60,24 @@ let vm = new Vue({
 
   替换挂载的元素。挂载元素的内容都将被忽略，除非模板的内容有分发插槽。
 
-###### render
+##### render
 
 - 类型：(createElement: () => VNode) => VNode
 
-###### renderError
+##### renderError
 
 > 当 `render` 函数遭遇错误时，提供另外一种渲染输出。
 
 - 类型：(createElement: () => VNode,error: Error) => VNode
 
-##### 数据
+#### 数据
 
-###### data
+##### data
 
 - 类型：Object | Function
 - 限制：组件的定义只接受Function
 
-###### props
+##### props
 
 - 类型：``Array<string>`` | Object
 
@@ -93,11 +91,11 @@ let vm = new Vue({
   - `validator`：`Function`
     自定义验证函数会将该 prop 的值作为唯一的参数代入。在非生产环境下，如果该函数返回一个 falsy 的值 (也就是验证失败)，一个控制台警告将会被抛出。
 
-###### propsData
+##### propsData
 
 > 没用过没见过，先空着吧
 
-###### computed
+##### computed
 
 > 计算属性，一般用于多个数据影响一个数据。
 >
@@ -107,7 +105,7 @@ let vm = new Vue({
 
 - 类型：{ [key:string]: Fcuntion | { get : Function, set: Function } }
 
-###### methods
+##### methods
 
 > 方法，需要手动调用
 >
@@ -115,7 +113,7 @@ let vm = new Vue({
 
 - 类型：{ [key: string]: Function }
 
-###### watch
+##### watch
 
 > 监测，一般用于一个数据影响多个数据
 >
@@ -123,25 +121,25 @@ let vm = new Vue({
 
 - 类型：{ [key: string]: string | Function | Object | Array }  Function 应该是最常用的
 
-##### 生命周期
+#### 生命周期
 
-###### 一般钩子
+##### 一般钩子
 
 ![vue生命周期](/notes/imgs/vue/vue生命周期.jpg)
 
-###### activated/deactivated
+##### activated/deactivated
 
 > 被 keep-alive 缓存的组件激活/停用时调用。
 
-###### errorCaptured
+##### errorCaptured
 
 > 当捕获一个来自子孙组件的错误时被调用。2.5.0+ 新增
 
 - 类型：`(err: Error, vm: Component, info: string) => ?boolean `
 
-##### 资源
+#### 资源
 
-###### components
+##### components
 
 > 定义Vue实例可用组件
 
@@ -155,7 +153,7 @@ new Vue({
 })
 ```
 
-###### directives
+##### directives
 
 [自定义指令](#自定义指令)
 
@@ -175,7 +173,7 @@ new Vue({
 })
 ```
 
-###### filters
+##### filters
 
 [过滤器](#过滤器)
 
@@ -193,9 +191,9 @@ new Vue({
 })
 ```
 
-##### 其他
+#### 其他
 
-###### mixins
+##### mixins
 
 [混入](#混入 mixin)
 
@@ -213,14 +211,14 @@ var vm = new Vue({
 })
 ```
 
-###### name
+##### name
 
 - 类型：string
 - 限制：只有作为组件选项时起作用
 
-#### 指令
+### 指令
 
-##### 常用指令
+#### 常用指令
 
 - v-text
 
@@ -308,9 +306,9 @@ var vm = new Vue({
 
   **如果确定这个元素及其子组件以后再也不会变动时使用**
 
-##### 自定义指令
+#### 自定义指令
 
-###### 钩子函数
+##### 钩子函数
 
 - `bind`：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
 - `inserted`：被绑定元素插入父节点时调用 (仅保证父节点存在，但不一定已被插入文档中)。
@@ -319,7 +317,7 @@ var vm = new Vue({
 - `componentUpdated`：指令所在组件的 VNode **及其子 VNode** 全部更新后调用。
 - `unbind`：只调用一次，指令与元素解绑时调用。
 
-###### 参数说明
+##### 参数说明
 
 - `el`：指令所绑定的元素，可以用来直接操作 DOM。
 - `binding`：一个对象，包含以下 property：
@@ -334,9 +332,9 @@ var vm = new Vue({
 
 > 除了 `el` 之外，其它参数都应该是只读的。
 
-#### 插槽
+### 插槽
 
-##### 使用
+#### 使用
 
 ```
 // 父组件
@@ -356,7 +354,7 @@ var vm = new Vue({
 	默认内容
 ```
 
-##### 具名插槽
+#### 具名插槽
 
 > 用于组件内有多处插槽时，确定内容插入位置
 
@@ -389,7 +387,7 @@ var vm = new Vue({
 </div>
 ```
 
-##### 作用域插槽
+#### 作用域插槽
 
 ```
 // 父组件获取子组件绑定的属性
@@ -415,7 +413,7 @@ var vm = new Vue({
 </span>
 ```
 
-##### 缩写
+#### 缩写
 
 `v-slot:header="{user}"`
 
@@ -431,7 +429,7 @@ var vm = new Vue({
 
 `#="{user}"`
 
-##### 废弃的用法
+#### 废弃的用法
 
 **`slot` 和 `slot-scope`**
 
@@ -440,19 +438,19 @@ var vm = new Vue({
 <div slot='header' slot-scope="slotProps"></div>
 ```
 
-#### 混入 mixin
+### 混入 mixin
 
 > 一个混入对象可以包含任意组件选项。当组件使用混入对象时，所有混入对象的选项将被“混合”进入该组件本身的选项。
 
-##### 合并方式
+#### 合并方式
 
 - 数据对象在内部会进行递归合并，并在发生冲突时以组件数据优先
 - 值为对象的选项，例如 `methods`、`components` 和 `directives`，将被合并为同一个对象。两个对象键名冲突时，取组件对象的键值对
 - 同名钩子函数将合并为一个数组，因此都将被调用。另外，混入对象的钩子将在组件自身钩子**之前**调用
 
-#### 过滤器
+### 过滤器
 
-##### 定义
+#### 定义
 
 - 在组件内定义
 
@@ -476,7 +474,7 @@ Vue.filter('capitalize', function (value) {
 })
 ```
 
-##### 使用
+#### 使用
 
 - 过滤器可以用在两个地方：**双花括号插值和 `v-bind` 表达式**
 
@@ -500,16 +498,16 @@ Vue.filter('capitalize', function (value) {
 {{ message | filterA('arg1', arg2) }}
 ```
 
-### 组件
+## 组件
 
-#### 动态组件
+### 动态组件
 
 ```
 <!-- 组件会在 `currentTabComponent` 改变时改变 -->
 <component :is="currentTabComponent"></component>
 ```
 
-##### keep-alive
+#### keep-alive
 
 ```
 <keep-alive>
@@ -527,7 +525,7 @@ Vue.filter('capitalize', function (value) {
 </keep-alive>
 ```
 
-#### 单文件组件
+### 单文件组件
 
 > 文件扩展名为 .vue 的 single-file components (单文件组件) 
 
@@ -559,9 +557,9 @@ Vue.filter('capitalize', function (value) {
 
   
 
-### 路由
+## 路由
 
-#### 关键组件
+### 关键组件
 
 ##### router-link
 
@@ -571,7 +569,7 @@ Vue.filter('capitalize', function (value) {
 >
 > 另外，当目标路由成功激活时，链接元素自动设置一个表示激活的 CSS 类名。
 
-###### to
+##### to
 
 - 类型：`string | Location`
 
@@ -579,7 +577,7 @@ Vue.filter('capitalize', function (value) {
 
   > 表示目标路由的链接。当被点击后，内部会立刻把 `to` 的值传到 `router.push()`，所以这个值可以是一个字符串或者是描述目标位置的对象。
 
-###### replace
+##### replace
 
 - 类型: `boolean`
 
@@ -587,7 +585,7 @@ Vue.filter('capitalize', function (value) {
 
   > 设置 `replace` 属性的话，当点击时，会调用 `router.replace()` 而不是 `router.push()`，于是导航后不会留下 history 记录。
 
-###### append
+##### append
 
 - 类型: `boolean`
 
@@ -597,7 +595,7 @@ Vue.filter('capitalize', function (value) {
   >
   > 用到嵌套路由中，就不需要写多层path
 
-###### tag
+##### tag
 
 - 类型: `string`
 
@@ -605,7 +603,7 @@ Vue.filter('capitalize', function (value) {
 
   有时候想要 ``router-link`` 渲染成某种标签，例如 `li`。 于是我们使用 `tag` prop 类指定何种标签，同样它还是会监听点击，触发导航。
 
-###### active-class
+##### active-class
 
 - 类型: `string`
 
@@ -613,7 +611,7 @@ Vue.filter('capitalize', function (value) {
 
   > 设置链接激活时使用的 CSS 类名。默认值可以通过路由的构造选项 `linkActiveClass` 来全局配置。
 
-###### exact
+##### exact
 
 > - 类型: `boolean`
 >
@@ -623,11 +621,11 @@ Vue.filter('capitalize', function (value) {
 >
 >   按照这个规则，每个路由都会激活 ``<router-link to="/">``！想要链接使用“精确匹配模式”，则使用 `exact` 属性
 
-##### router-view
+#### router-view
 
 > `router-view`组件是一个 functional 组件，渲染路径匹配到的视图组件。`router-view` 渲染的组件还可以内嵌自己的`router-view` ，根据嵌套路径，渲染嵌套组件。
 
-###### name
+##### name
 
 > 有时候想同时 (同级) 展示多个视图，而不是嵌套展示，例如创建一个布局，有 `sidebar` (侧导航) 和 `main` (主内容) 两个视图，这个时候命名视图就派上用场了。你可以在界面中拥有多个单独命名的视图，而不是只有一个单独的出口。如果 `router-view` 没有设置名字，那么默认为 `default`
 
@@ -657,9 +655,9 @@ const router = new VueRouter({
 })
 ```
 
-#### router config
+### router config
 
-##### routes
+#### routes
 
 ```
 interface RouteConfig = {
@@ -678,13 +676,13 @@ interface RouteConfig = {
 }
 ```
 
-##### mode
+#### mode
 
 - 类型: `string`
 - 默认值: `"hash" (浏览器环境) | "abstract" (Node.js 环境)`
 - 可选值: `"hash" | "history" | "abstract"`
 
-##### base
+#### base
 
 - 类型: `string`
 
@@ -692,7 +690,7 @@ interface RouteConfig = {
 
   应用的基路径。例如，如果整个单页应用服务在 `/app/` 下，然后 `base` 就应该设为 `"/app/"`
 
-##### linkActiveClass
+#### linkActiveClass
 
 - 类型: `string`
 
@@ -700,13 +698,13 @@ interface RouteConfig = {
 
   全局配置 ``router-link`` 默认的激活的 class。
 
-##### scrollBehavior
+#### scrollBehavior
 
 [滚动行为](#滚动行为)
 
 - 类型: `Function
 
-##### fallback
+#### fallback
 
 - 类型: `boolean`
 
@@ -714,9 +712,9 @@ interface RouteConfig = {
 
   当浏览器不支持 `history.pushState` 控制路由是否应该回退到 `hash` 模式。默认值为 `true`。
 
-#### 实例方法
+### 实例方法
 
-##### 编程式导航
+#### 编程式导航
 
 - `router.push(path)`: 跳转到某个路径
 - `router.replace(path)`:不产生新的历史记录
@@ -738,12 +736,12 @@ router.push({ name: 'user', params: { userId: '123' }})
 router.push({ path: 'register', query: { plan: 'private' }})
 ```
 
-##### 导航守卫
+#### 导航守卫
 
-##### 其他
+#### 其他
 
-#### 路由懒加载
+### 路由懒加载
 
-#### 过渡效果
+### 过渡效果
 
-#### 滚动行为
+### 滚动行为

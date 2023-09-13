@@ -1128,7 +1128,7 @@ export default class C extends Component {
            container.appendChild(dom);
        } else if (/^class\s/.test(Function.prototype.toString.call(type)){
            // 类组件
-           // new type(props);
+           render(new type(props).render(), container);
        } else {
            // 函数组件
            render(type(props), container);
