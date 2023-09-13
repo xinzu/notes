@@ -22,8 +22,8 @@ export default {
         const router = useRouter();
 
         onMounted(() => {
-            console.log("=====Notice.vue updated", store.state.count)
-            store.commit('setLoadNotice', true)
+            // console.log("=====Notice.vue updated", store.state.count)
+            // store.commit('setLoadNotice', true)
         })
         return {
             props,

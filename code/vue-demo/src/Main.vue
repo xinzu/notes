@@ -7,7 +7,12 @@
         </template>
     </Campus>
     <div class="container">
-        <div>{{ store.state.count }}</div>
+        <div>count: {{ store.state.user.counter }}</div>
+        <div>mapState: {{ storeState.counter }}</div>
+        <!-- <div>{{ store.getters.user.doubleCount }}</div>
+        <div>{{ store.getters.user.doubleCountPlusOne }}</div>
+        <div>{{ store.getters.getUserById('1') }}</div>
+        <div>{{ store.getters.getUserById('2') }}</div> -->
         <div id="notice"></div>
         <div>router.currentRoute.value.name: {{ router.currentRoute.value.name  }}</div> 
         <router-view class="page-container" :msg="123" @init="routerPageInit"></router-view>
@@ -20,8 +25,8 @@
 </template>
 
 <script setup>
-import { onBeforeUpdate, onBeforeMount, onMounted, onUpdated, provide, reactive } from 'vue';
-import { useStore } from 'vuex';
+import { onBeforeUpdate, onBeforeMount, onMounted, onUpdated, provide, reactive, computed } from 'vue';
+import { useStore, mapState, mapMutations } from 'vuex';
 import { useRouter } from 'vue-router';
 import extendJs from './extendJs';
 
@@ -35,6 +40,23 @@ const attrs = {
 
 const store = useStore();
 const router = useRouter();
+
+const storeStateFns = mapState('user', ['counter']);
+const storeState = {};
+Object.keys(storeStateFns).forEach(fnnKey=>{
+    const fn = storeStateFns[fnnKey].bind({$store:store})
+    storeState[fnnKey] = computed(fn)
+})
+
+const storeMutationFns = mapMutations('user', ['increment']);
+const storeMutation = {};
+Object.keys(storeMutationFns).forEach(fnnKey=>{
+    storeMutation[fnnKey] = storeMutationFns[fnnKey].bind({$store:store});
+})
+
+console.log('=======store.getters', store.getters)
+console.log('=======store.mapState', storeState)
+console.log('=======store.mapMutations', storeMutation)
 
 const pages = [{
     path: '/overview',
@@ -79,8 +101,9 @@ onBeforeMount(() => {
 onMounted(() => {
     console.log("========App.vue onMounted");
     setTimeout(() => {
-        store.commit('setCount', 1)
-    }, 200)
+        // storeMutation.increment();
+        store.commit('user/increment');
+    }, 2000)
     extendJs({
         message: '121231'
     });

@@ -3,7 +3,7 @@
         {{ index }}
         <input type="text"  />
     </div>
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
 </template>
 
 <script setup>

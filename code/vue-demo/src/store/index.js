@@ -6,18 +6,17 @@
  * @LastEditTime : 2023-06-20 15:49:12
  */
 import { createStore } from 'vuex';
+import user from './user';
+import web from './web';
 
 export default createStore({
-    state: {
-        count: 0,
-        loadNotice: false,
+    modules: {
+        user,
+        web
     },
-    mutations: {
-        setCount: (state, val) => {
-            state.count = val;
-        },
-        setLoadNotice: (state, val) => {
-            state.loadNotice = val;
+    getters: {
+        test() {
+            return 'test';
         }
     }
 });
