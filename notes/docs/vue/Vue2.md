@@ -745,3 +745,74 @@ router.push({ path: 'register', query: { plan: 'private' }})
 ### 过渡效果
 
 ### 滚动行为
+
+
+
+## diff算法
+
+```js
+// 判断DOM元素是否相同的方法
+function sameVnode (a, b) {
+  return (
+    a.key === b.key &&
+    a.asyncFactory === b.asyncFactory && (
+      (
+        a.tag === b.tag &&
+        a.isComment === b.isComment &&
+        isDef(a.data) === isDef(b.data) &&
+        sameInputType(a, b)
+      ) || (
+        isTrue(a.isAsyncPlaceholder) &&
+        isUndef(b.asyncFactory.error)
+      )
+    )
+  )
+}
+```
+
+- 判断元素是否相同，直接循环遍历，进行patch操作
+
+- 元素相同，对比属性、对比子节点
+
+  - 子节点为文本，直接修改
+
+  - 无key，直接循环遍历，进行patch操作
+
+
+  - 有key，*深度递归+双指针*（以下比较都是用key进行，如果有相同的则进行 patch 操作）
+
+    『头头 — 尾尾 — 头尾— 尾头』
+
+    1. 比较 oldStart 和 newStart 的节点，如果一样，则 oldStart++ 、 newStart++｝
+
+       ![vue2-diff-1](/notes/imgs/vue/vue2-diff-1.png)
+
+    2. 比较 oldEnd 和 newEnd 的节点，如果一样，则 oldEnd-- 、 newEnd--
+
+       ![vue2-diff-2](/notes/imgs/vue/vue2-diff-2.png)
+
+    3. 1&2 不满足的情况下，比较 oldStart 和 newEnd 的节点，如果一样，将 oldStart 对应的**真实DOM**移动到 oldEnd 对应的**真实DOM**之后，oldStart ++、newEnd--
+
+       ![vue2-diff-3](/notes/imgs/vue/vue2-diff-3.png)
+
+    4. 1&2&3不满足的情况下，比较 oldEnd 和 newStart 的节点，如果一样，将 oldEnd 对应的**真实DOM**移动到 oldStart 对应的**真实DOM**之前，newStart++、oldEnd--
+
+       ![vue2-diff-4](/notes/imgs/vue/vue2-diff-4.png)
+
+    5. 均不满足的情况下，循环比较 newStart对应节点 和 所有旧节点
+
+       - 如果有key，寻找key值相同的节点，将对应的**真实DOM**移动到 oldStart 对应的**真实DOM**之前，oldStart++ 、newStart++
+
+         ![vue2-diff-5-1](/notes/imgs/vue/vue2-diff-5-1.png)
+
+       - 没有找到相同的节点，在 oldStart 之前创建新的DOM，oldStart++ 、 newStart++
+
+         ![vue2-diff-5-2](/notes/imgs/vue/vue2-diff-5-2.png)
+
+    6. 旧节点中未遍历完的节点，在oldStart和 oldEnd 之间的节点是需要删除的
+
+       新节点中未遍历完的节点，在newStart 和 newEnd 之间的节点是需要新增的，新增在 newEnd 后一个节点之前
+
+
+
+

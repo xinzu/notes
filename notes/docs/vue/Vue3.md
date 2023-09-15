@@ -1597,3 +1597,90 @@ p {
 
 ```
 
+
+
+## diff算法
+
+和`vue2`的差别
+
+- vue2、vue3 的 diff 算法实现差异主要体现在：处理完首尾节点后，对剩余节点的处理方式。
+- vue2 是通过对旧节点列表建立一个 { key, oldVnode }的映射表，然后遍历新节点列表的剩余节点，根据newVnode.key在旧映射表中寻找可复用的节点，然后打补丁并且移动到正确的位置。
+- vue3 则是建立一个存储新节点数组中的剩余节点在旧节点数组上的索引的映射关系数组，建立完成这个数组后也即找到了可复用的节点，然后通过这个数组计算得到最长递增子序列，这个序列中的节点保持不动，然后将新节点数组中的剩余节点移动到正确的位置。
+
+1. 头部节点对比
+
+   ![vue3-diff-1](/notes/imgs/vue/vue3-diff-1.png)
+
+2. 尾部节点对比
+
+   ![vue3-diff-2](/notes/imgs/vue/vue3-diff-2.png)
+
+3. 剩余节点对比
+
+   - 旧节点遍历完成，新节点还剩余，newStart(s2) 和 newEnd(e2)之间是需要创建的新节点，创建在 newEnd 后一个节点之前
+
+   - 新节点遍历完成，旧节点还剩余，oldStart(s1) 和 newStart(e1)之间是需要删除的新节点
+
+   - 都还有剩余
+
+     - 新建一个新节点映射表keyToNewIndexMap，toBePatched为新节点剩余节点，newIndexToOldIndexMap为toBePatched长度的数组
+
+     - 遍历旧乱序子级，判断哪些旧子级在keyToNewIndexMap映射表存在，存在的话进行patch并表标识，不存在就卸载旧元素
+
+       ![vue3-diff-3](/notes/imgs/vue/vue3-diff-3.png)
+
+       ```js
+       const patchKeyedChildren = (oldChildren, newChildren, el) => {
+           // ....省略上面代码
+           //-----乱序比对-----
+           //以下要判断无序的可以复用情况 如i到e1和到e2之间的都称为乱序
+           let s1 = i
+           let s2 = i
+           const keyToNewIndexMap = new Map()//用于保存乱序的新子级中的元素的下标
+           for (let i = s2; i <= e2; i++) {//注意i是从s2开始
+               keyToNewIndexMap.set(newChildren[i].key, i)
+           }
+           //console.log(keyToNewIndexMap);// { f: 2, c: 3, d: 4, e: 5, h: 6 }
+       
+           //循环乱序旧子级，看看新子级存不存在该元素，存在就添加到列表中复用，否则删除
+           const toBePatched = e2 - s2 + 1 //新乱序总个数
+           //根据乱序个数创建数组并赋值为0，记录是否比对过映射表
+           const newIndexToOldIndexMap = new Array(toBePatched).fill(0)//[0,0,0,0]
+           for (let i = s1; i <= e1; i++) {//循环旧乱序子级
+               const oldchild = oldChildren[i]//根据下标获取到旧乱序中的元素
+               //查找是否存在该元素，里面保存的是对应元素在newChildren的下标
+               let newIndex = keyToNewIndexMap.get(oldchild.key)
+               if (newIndex == undefined) {
+                   unmount(oldchild)//多余的删掉
+               } else {
+                   newIndexToOldIndexMap[newIndex - s2] = i + 1 //标识
+                   patch(oldchild, newChildren[newIndex], el)//如果存在就比对子级差异
+               }
+       
+           }//到这只是新旧比对，没有移动位置
+       
+           //console.log(keyToNewIndexMap);//{ f: 2, c: 3, d: 4, e: 5, h: 6 }
+           //console.log(newIndexToOldIndexMap);//[6,3,4,5,0]
+       
+           //需要移动位置
+           for (let i = toBePatched - 1; i >= 0; i--) {//倒叙插入
+               let index = i + s2 //找到当前元素在newChildren中的下标
+               let current = newChildren[index] //找到newChildren最后一个乱序元素
+               //找到元素的下个元素作为参照物
+               let anchor = index + 1 < newChildren.length ? newChildren[index + 1] : null
+               //current可能是新增的元素没有el，如果没有el
+               if (newIndexToOldIndexMap[i] === 0) {
+                   patch(null, current, el, anchor)//第一个元素传入null，表示要创建元素并根据参照物插入
+               } else {
+                   hostInsert(current.el, el, anchor.el)//存在el直接根据参照物插入
+               }
+           }
+       }
+       ```
+
+     - 进行倒叙插入，从toBePatched-1往前遍历，取下一个元素作为参照物
+
+       - 如果newIndexToOldIndexMap[i]的值为0，需要创建元素，执行patch
+       - 如果newIndexToOldIndexMap[i]，由于之前已经执行过patch，直接插入到上一次遍历的元素之前
+
+- 最长递增子序列：找到依次递增的数组保存在新序列中，使得这个新序列元素的数值依次递增，并且这个新序列的长度尽可能地大
