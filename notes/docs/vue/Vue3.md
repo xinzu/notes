@@ -449,22 +449,31 @@ this.$slots.header()
 
 #### 全局API
 
+|       2.x Global API       |               3.x Global API               |
+| :------------------------: | :----------------------------------------: |
+|  Vue.config.productionTip  |                    移除                    |
+|         Vue.extend         |                    移除                    |
+|         Vue.config         |                 app.config                 |
+| Vue.config.ignoredElements | app.config.compilerOptions.isCustomElement |
+|       Vue.prototype        |        app.config.globalProperties         |
+|          Vue.use           |                  app.use                   |
+|       Vue.component        |               app.component                |
+|       Vue.directive        |               app.directive                |
+|         Vue.mixin          |                 app.mixin                  |
+
 ##### createApp
 
 vue3引入了`createApp`，Vue上的所有全局API在创建的app实例上同样存在
 
-```
+```js
 import { createApp } from 'vue'
-const app = createApp({})
+// 第一个参数是根组件。第二个参数可选，它是要传递给根组件的 props。
+const app = createApp(component, [props])
 ```
 
-###### `config.productionTip`移除
+##### 	[自定义元素](#自定义元素)
 
-###### `config.ignoredElements` 替换为 `app.config.isCustomElement`
-
-​	[自定义元素](#自定义元素)
-
-###### `Vue.prototype` 替换为 `app.config.globalProperties`
+##### `Vue.prototype` 替换为 `app.config.globalProperties`
 
 ```
 Vue.prototype.$http
@@ -472,7 +481,7 @@ Vue.prototype.$http
 this.$http
 ```
 
-###### 移除`Vue.extend` 
+##### 移除`Vue.extend` 
 
 > 在 Vue 3 中，我们强烈建议使用 [组合式 API](https://v3.cn.vuejs.org/api/composition-api.html) 来替代继承与 mixin。如果因为某种原因仍然需要使用组件继承，你可以使用 [`extends` 选项](https://v3.cn.vuejs.org/api/options-composition.html#extends) 来代替 `Vue.extend`。
 
@@ -504,13 +513,6 @@ const Profile = {
 }
 // 用createApp
 Vue.createApp(Profile).mount('#mount-point')
-```
-
-###### 引入插件方法修改
-
-```
-const app = createApp(MyApp)
-app.use(VueRouter)
 ```
 
 ##### 挂载APP实例
@@ -547,6 +549,10 @@ export default {
 
 ##### 在应用之间共享配置
 
+vue2从同一个 Vue 构造函数创建的每个根实例**共享相同的全局配置**
+
+vue3想要实现配置共享，可以通过创建工厂函数
+
 ```
 import { createApp } from 'vue'
 import Foo from './Foo.vue'
@@ -564,7 +570,9 @@ createMyApp(Bar).mount('#bar')
 
 ##### Treeshaking
 
-vue2中，全局 API 如 `Vue.nextTick()` 是不支持 tree-shake 的，不管它们实际是否被使用，都会被包含在最终的打包产物中。
+vue2中，以下API是不支持 tree-shake 的，不管它们实际是否被使用，都会被包含在最终的打包产物中。
+
+在 Vue 3 中，全局和内部 API 都经过了重构，并考虑到了 tree-shaking 的支持。
 
 - Vue.nextTick
 - Vue.observable
@@ -572,10 +580,6 @@ vue2中，全局 API 如 `Vue.nextTick()` 是不支持 tree-shake 的，不管�
 - Vue.compile
 - Vue.set
 - Vue.delete
-
-`import { nextTick } from 'vue'`
-
-在 Vue 3 中，全局和内部 API 都经过了重构，并考虑到了 tree-shaking 的支持。因此，全局 API 现在只能作为 ES 模块构建的命名导出进行访问（使用时要引入，否则会**报错**）。
 
 #### 挂载API变化
 

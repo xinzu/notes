@@ -12,4 +12,4 @@ app.use(store).use(router).mount('#app');
 const prototype = app.config.globalProperties;
 // 静态获取图片
 prototype.getImageUrl = (name) => new URL(`/src/assets/${name}`, import.meta.url).href;
-app.config.isCustomElement = tag => tag === 'plastic-button'
+app.config.compilerOptions.isCustomElement = tag => tag === 'plastic-button'
