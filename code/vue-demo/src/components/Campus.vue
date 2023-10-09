@@ -22,6 +22,7 @@
 import { onMounted, onUpdated, useAttrs, useSlots, inject, onBeforeUpdate, onBeforeMount, ref } from 'vue';
 
 const props = defineProps(['count']);
+// const emits = defineEmits(['event']);
 const attrs = useAttrs();
 const slots = useSlots();
 
@@ -41,6 +42,8 @@ onBeforeMount(() => {
     setTimeout(() => {
         state.value = '123123';
     });
+    console.log("===attrs", attrs)
+    // emits('event')
 })
 
 onMounted(() => {

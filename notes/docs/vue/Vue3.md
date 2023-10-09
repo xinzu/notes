@@ -94,6 +94,18 @@ export default {
 
 **vue3**中，$attrs 包含所有的 attribute，也包括事件 [emit选项](#emit选项)
 
+```txt
+$attrs 对象不包含的有：
+1、vue内置的特殊attribute：key  ref。
+2、vue的所有内置指令（v-on、v-bind 除外）
+3、所有自定义的 directive 指令
+4、当前组件的 props 内声明的所有 prop 名称
+5、当前组件的 emits 内声明的所有自定义的事件名
+除以上内容外，其余都包含
+```
+
+`inheritAttrs`属性
+
 上面的实例就会生成以下HTML
 
 ```
@@ -139,6 +151,67 @@ export default {
   const app = Vue.createApp({})
   app.config.isCustomElement = tag => tag === 'plastic-button'
   ```
+
+- 使用
+
+  - 定义元素内容，与vue组件一样，只支持props和emits
+
+  ```vue
+  <template>
+      <div>自定义元素</div>
+      <div>{{ props.data }}</div>
+  </template>
+  
+  <script setup>
+  const props = defineProps({
+      data: {
+          type: Number,
+          default: 0
+      }
+  });
+  </script>
+  <style lang='scss' scoped>
+  
+  </style>
+  ```
+
+  - 注册自定义元素
+
+  ```js
+  import { defineCustomElement } from "vue";
+  import PlasticButton from './PlasticButton.vue';
+  
+  export function register() {
+      customElements.define('plastic-button', defineCustomElement(PlasticButton));
+  }
+  ```
+
+  - 使用
+
+  ```vue
+  <template>
+      <plastic-button :data="plasticData"></plastic-button>
+  </template>
+  
+  <script setup>
+  import { onMounted, onBeforeMount, ref } from 'vue';
+  import { register } from './components'
+      
+  const plasticData = ref(0);
+  onBeforeMount(() => {
+      register();
+  })
+  onMounted(() => {
+      setInterval(() => {
+          plasticData.value++;
+      }, 5000)
+  })
+  </script>
+  ```
+
+  - 最终编译
+
+  ![image-20231009175016496](/notes/imgs/vue/自定义元素.png)
 
 ### is动态组件
 
@@ -262,8 +335,6 @@ vue3.x支持多节点
 2.x 版本中在一个元素上同时使用 `v-if` 和 `v-for` 时，`v-for` 会优先作用。
 
 3.x 版本中 `v-if` 总是优先于 `v-for` 生效，也就是说可以在v-for里面写v-if
-
-**以后如果有v-if + v-for 的面试题，可以把vue3的改动也加上**
 
 #### v-model
 
@@ -1403,6 +1474,38 @@ export default function () {
     console.log("=============")
 </script>
 ```
+
+### name
+
+当我们使用语法糖形式，但不给组件设置组件名时，组件会默认根据*文件名*，给自己设置组件名。弊端显而易见，改组件名必须修改文件名，不自由，不好管理。
+
+- 在组件中额外创建一个script脚本，在其中采用选项式api的写法，设置name属性
+
+  ```vue
+  <script>
+      export default {
+          name: 'Xxx'
+      }
+  </script>
+  <script setup>
+      console.log("=============")
+  </script>
+  ```
+
+- 通过`vite-plugin-vue-setup-extend`插件来解决问题。
+
+  ```
+  // 修改vite.config.js
+  import vuesetupExtend from 'vite-plugin-vue-setup-extend';
+  {
+  	...
+  	plugins: [vue(), vuesetupExtend()]
+  }
+  
+  // 在组件中命名
+  <script setup name="Xxx">
+  </script>
+  ```
 
 ### data和methods
 

@@ -1,6 +1,6 @@
 <template>
     <div class="bg"></div>
-    <Campus count="1" @vue:mounted="campusMounted" v-bind="attrs">
+    <Campus count="1" @vue:mounted="campusMounted" v-bind="attrs" @event="() => {console.log('event')}" class="campus-wrap">
         <v-slot>default</v-slot>
         <template #hello>
             hello world
@@ -35,7 +35,7 @@ import Campus from '@/components/Campus.vue';
 const attrs = {
     id: 'campusDiv',
     a: 1,
-    b: 2
+    b: 2,
 }
 
 const store = useStore();
