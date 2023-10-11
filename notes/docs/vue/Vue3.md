@@ -1044,7 +1044,7 @@ npm run dev
   }) 
   
   /* 情况三：监视reactive定义的响应式数据
-  			若watch监视的是reactive定义的响应式数据，则无法正确获得oldValue！！
+  			若watch监视的是reactive定义的响应式数据，则无法正确获得oldValue，oldValue的值与newValue是一样的
   			若watch监视的是reactive定义的响应式数据，则强制开启了深度监视 
   */
   watch(person,(newValue,oldValue)=>{

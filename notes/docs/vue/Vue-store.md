@@ -1,21 +1,27 @@
-## Vuex
+## Vuex 3.x
+
+**在vue2版本使用**
 
 ### 安装
 
 ```sh
-yarn add vuex@next
+yarn add vuex@v3.6.2
 # 或者使用 npm
-npm install vuex@next
+npm install vuex@v3.6.2
 ```
 
 ```js
 // 在main.js中使用
-import { createApp } from 'vue';
-import store from '@/store'
+import Vue from 'vue';
+import App from './App.vue';
+import store from './store';
 
-const app = createApp();
+Vue.config.productionTip = false
 
-app.use(store).mount('#app');
+new Vue({
+    render: h => h(App),
+    store
+}).$mount('#app')
 ```
 
 ### 定义一个Store
@@ -29,18 +35,27 @@ app.use(store).mount('#app');
 - **Modules**: 将 store 分割成**模块**，每个模块都有自己的 state 、getters、mutation、action，甚至可以嵌套子模块modules
 
 ```js
-// store/index.js
-import { createStore } from 'vuex';
-import user from './modules/user';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-export default createStore({
+import user from './user';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
     modules: {
         user,
     },
+    getters: {
+        test() {
+            return 'test';
+        }
+    }
 });
 
 //store/user.js
 const user = {
+    namespaced: true,
     state: {
         counter: 0,
         users: [{
@@ -50,9 +65,7 @@ const user = {
     },
     getters: {
         doubleCount: (state) => state.counter * 2,
-        doubleCountPlusOne() {
-            return this.doubleCount + 1;
-        },
+        doubleCountPlusOne: (state, getters) => getters.doubleCount + 1;
         getUserById: (state) => {
           	return (userId) => state.users.find((user) => user.id === userId);
         }
@@ -93,6 +106,74 @@ store.dispatch('increment');
 // namespace为true的情况
 store.commit('user/increment');
 store.dispatch('user/increment');
+
+// 在vue文件中使用
+this.$store.state
+this.$store.state.user.counter
+// getters
+// namespaced: false
+this.$store.getters.doubleCount
+// namespaced: true
+this.$store.getters['user/doubleCount']
+```
+
+### 辅助函数 
+
+- **mapState**: `mapState(namespace?: string, map: Array<string> | Object<string | function>): Object`
+- **mapGetters**: `mapGetters(namespace?: string, map: Array<string> | Object<string>): Object`
+- **mapMutation**
+- **mapActions**
+
+```js
+import { mapState } from 'vuex'
+
+export default {
+  	computed: {
+        // namespaced: false
+		...mapState(['counter']),
+        // 或者
+        ...mapState({
+            counterAlias: 'counter' // 变量重命名
+        })
+        // namespaced: true
+		...mapState('user', ['counter'])
+	}
+}
+```
+
+
+
+## Vuex 4.x
+
+**在vue3使用**
+
+### 安装
+
+```sh
+yarn add vuex@next
+# 或者使用 npm
+npm install vuex@next
+// 在main.js中使用
+import { createApp } from 'vue';
+import store from '@/store'
+
+const app = createApp();
+
+app.use(store).mount('#app');
+```
+
+### 定义一个Store
+
+```js
+// store/index.js
+import { createStore } from 'vuex';
+import user from './modules/user';
+
+export default createStore({
+    modules: {
+        user,
+    },
+});
 ```
 
 ### 辅助函数 
