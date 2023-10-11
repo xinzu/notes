@@ -34,5 +34,8 @@ export default createRouter({
             name: 'comprehensive',
             component: () => import('@/components/Comprehensive.vue'),
         }]
-    }]
+    }],
+    scrollBehavior: () => {
+        return { top: 50, behavior: 'smooth' }
+    },
 })

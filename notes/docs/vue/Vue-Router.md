@@ -134,7 +134,7 @@ export default createRouter({
 <router-view class="page-container" :msg="123" @init="routerPageInit"></router-view>
 ```
 
-![image-20230720115259929](/notes/imgs/vue/outer-view.png)
+![image-20230720115259929](/notes/imgs/vue/router-view.png)
 
 
 
@@ -274,8 +274,27 @@ router.beforeEach((to, from, next) => {
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [...],
-  scrollBehavior (to, from, savedPosition) {
-    // return 期望滚动到哪个的位置
+  scrollBehavior: (to, from, savedPosition) => {
+    // 始终滚动到顶部
+    return { top: 0 };
+                            
+    // 始终在元素 #main 上方滚动 10px
+    return {
+      // 也可以这么写
+      // el: document.getElementById('main'),
+      el: '#main',
+      top: -10,
+    }
+
+    // 如果你的浏览器支持滚动行为，你可以让它变得更流畅
+    return { top: 0, behavior: 'smooth' };
+
+    // 延迟滚动
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ left: 0, top: 0 })
+      }, 500)
+    })
   }
 })
 ```
