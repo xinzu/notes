@@ -10,7 +10,7 @@ module.exports = {
     base: '/notes/',
     dest: 'dist',
     themeConfig: {
-        sidebarDepth: 4,
+        sidebarDepth: 10,
         sidebar: [
             {
                 title: '基础知识扩展',

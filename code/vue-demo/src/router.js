@@ -12,9 +12,8 @@ import {
 export default createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
     routes: [{
-        path: '/',
+        path: '/home',
         name: 'main',
-        alias: '/home',
         component: () => import('@/Main.vue'),
         children: [{
             path: '/overview/:id?',
@@ -34,6 +33,10 @@ export default createRouter({
             name: 'comprehensive',
             component: () => import('@/components/Comprehensive.vue'),
         }]
+    },
+    {
+        path: '/:catchAll(.*)',
+        component: () => import('@/components/404.vue')
     }],
     scrollBehavior: () => {
         return { top: 50, behavior: 'smooth' }

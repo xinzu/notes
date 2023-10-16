@@ -6,23 +6,27 @@
 <script setup>
 import { onMounted, onBeforeMount, ref } from 'vue';
 import { register } from './components'
+import { useRouter, useRoute } from 'vue-router';
 
-const list = ref([]);
-const handleAdd = () => {
-    let random = Math.random() * 1000;
-    list.value.push({
-        id: random,
-        name: random
-    })
-}
-const handleDelete = (i) => {
-    list.value.splice(i, 1)
+const router = useRouter();
+
+const addRoutes = () => {
+    const routes = {
+        name: 'addTest',
+        path: '/addTest',
+        component: () => import('@/views/overview/AddTest.vue'),
+    }
+    router.addRoute('main', routes);
+    // router.addRoute(routes);
+
+    console.log(router.getRoutes());
 }
 
 const plasticData = ref(0);
 
 onBeforeMount(() => {
     register();
+    addRoutes();
 })
 onMounted(() => {
     setInterval(() => {

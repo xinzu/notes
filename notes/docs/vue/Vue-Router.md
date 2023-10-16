@@ -313,3 +313,28 @@ const router = createRouter({
 })
 ```
 
+### 动态路由
+
+菜单存储在后台时，进入系统获取到菜单数据后自动生成路由
+
+- `router.addRoute(parentRouteName, route)`，添加一个新的路由记录，将其作为一个已有路由的子路由。
+- `router.addRoute(route)`，添加到最外层路由
+
+```js
+const menuData = [{
+    name: 'addTest',
+    path: '/addTest',
+    component: 'views/overview/AddTest',
+}];
+
+const addRoutes = () => {
+    menuData.forEach(({ name, path, component }) => {
+        const routes = {
+            name,
+            path,
+            component: () => import(`@/views/${component}.vue`),
+        }
+        router.addRoute(routes);
+	})
+}
+```

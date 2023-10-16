@@ -64,6 +64,9 @@ const pages = [{
 }, {
     path: '/comprehensive',
     name: '综合'
+}, {
+    path: '/addTest',
+    name: '跳转到动态路由'
 }];
 
 const changeMenu = (item) => {
