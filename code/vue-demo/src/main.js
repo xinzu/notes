@@ -2,6 +2,10 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import './assets/styles/tailwind.css'
+// import { yhButton } from '../../yh-components';
+import { ElButton } from 'element-plus';
+
+console.log(ElButton);
 
 import store from './store';
 import router from './router';

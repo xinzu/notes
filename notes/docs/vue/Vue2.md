@@ -815,4 +815,48 @@ function sameVnode (a, b) {
 
 
 
+## vue2.7
 
+> 支持你的项目在不升级Vue3的情况下使用Vue3的特性，例如Composition Api、setup、Css v-bind等
+
+### 版本升级
+
+#### vue-cli
+
+```json
+{
+  "devDependencies": {
+      // "@vue/cli-plugin-babel": "^4.0.0",
+      // "@vue/cli-plugin-eslint": "^4.0.0",
+      // "@vue/cli-service": "^4.0.0",
+      // 修改为
+      "@vue/cli-plugin-babel": "^4.5.18",
+      "@vue/cli-plugin-eslint": "^4.5.18",
+      "@vue/cli-service": "^4.5.18"
+  }
+}
+```
+
+#### vue
+
+```json
+
+{
+  "devDependencies": {
+      // "vue": "2.6.14",
+      // 修改为
+      "vue": "2.7.0",
+      // vue2.7 不再需要vue-template-compoler，所以可以将其删除
+      // "vue-template-compiler": "2.6.14"
+  }
+}
+```
+
+#### @vue/composition-api
+
+如果之前已经在Vue2的项目使用上了@vue/composition-api，这时你需要将项目中所用到的导入更新为vue:
+
+```vue
+// import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
+```

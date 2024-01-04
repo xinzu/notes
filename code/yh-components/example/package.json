@@ -1,0 +1,14 @@
+{
+    "name": "@yh-components/example",
+    "private": true,
+    "scripts": {
+        "dev": "vite"
+    },
+    "dependencies": {
+        "@vitejs/plugin-vue": "^4.4.0",
+        "vite": "^4.4.11"
+    },
+    "devDependencies": {
+        "sass": "^1.69.3"
+    }
+}

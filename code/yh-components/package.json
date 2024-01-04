@@ -1,0 +1,23 @@
+{
+  "private": "true",
+  "scripts": {
+    "dev:example": "pnpm -C example dev",
+    "build": "gulp -f gulpfile.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/gulp": "^4.0.15",
+    "gulp": "^4.0.2",
+    "sucrase": "^3.34.0",
+    "typescript": "^5.2.2",
+    "vue": "^3.3.4"
+  },
+  "dependencies": {
+    "@yh-components/components": "workspace:^",
+    "@yh-components/example": "workspace:^",
+    "@yh-components/theme-chalk": "workspace:^",
+    "@yh-components/utils": "workspace:^"
+  }
+}

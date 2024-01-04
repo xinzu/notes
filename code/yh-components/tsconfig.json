@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "es2016",
+        "declaration": false,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "jsx": "preserve",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "forceConsistentCasingInFileNames": true, // 强制区分大小写
+        "strict": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist/**"
+    ]
+}
