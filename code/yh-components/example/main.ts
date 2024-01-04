@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './src/App.vue';
-import YHButton from '@yh-components/components/button';
+// import YHButton from '@yh-components/components/button';
+import yhComponents from '@yh-components/components';
 
 const app = createApp(App);
-app.use(YHButton).mount('#app');
+app.use(yhComponents).mount('#app');
