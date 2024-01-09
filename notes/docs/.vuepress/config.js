@@ -51,6 +51,10 @@ module.exports = {
                         title: '宏任务和微任务',
                         path: '/基础知识扩展/宏任务和微任务.md',
                     },
+                    {
+                        title: '其他',
+                        path: '/基础知识扩展/other.md',
+                    },
                 ]
             },
             {
