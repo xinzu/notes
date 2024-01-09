@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "valtio-history": "^0.1.0"
+  }
+}

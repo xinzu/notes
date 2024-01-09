@@ -773,7 +773,7 @@ const App = () => {
 // 传入的ref定义在哪，父组件中获取到的就是谁
 const FancyInput = forwardRef((props, ref) => {
   const inputRef = useRef();
-  return <input ref={ref} type="text" />
+  return <input ref={inputRef} type="text" />
 });
 ```
 

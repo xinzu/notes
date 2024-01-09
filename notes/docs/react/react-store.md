@@ -1081,3 +1081,286 @@ export default observer(App);
 import menuStore from '@/store/menu';
 menuStore.setMenuData(res);
 ```
+
+
+
+## Valtio
+
+**不是必须在react项目中使用，类似与Pinia**
+
+### 安装
+
+```shell
+npm install valtio
+```
+
+### 使用
+
+#### 基本用法【proxy、useSnapshot】
+
+- #### proxy
+
+  代理状态，将要管理的值用 *proxy代理* 起来
+
+- #### useSnapshot
+
+  得到具有 ***响应式*** 且 ***只读*** 的值。在需要刷新显示的地方使用`useSnapshot`监听该对象变化
+  
+  - store/counter.js
+  
+  ```js
+  // store.counter
+  import { proxy } from 'valtio';
+  
+  export const countSate = proxy({
+      count: 0,
+  });
+  
+  export const countActions = {
+      increase: (addNumber) => {
+          countSate.count += Number(addNumber);
+      },
+      decrease: (deNumber) => {
+          countSate.count -= Number(deNumber);
+      }
+  }
+  ```
+  
+  - **在另一个store中使用**：store/test.js
+  
+  ```js
+  // store/test.js
+  import { proxy } from 'valtio'
+  import { countSate } from './count'
+  import { watch } from 'valtio/utils';
+  
+  export const testState = proxy({
+      testCount: countSate.count
+  })
+  // 监听 counterStore 的更新 
+  watch((get) => {
+      get(countSate);
+      testState.testCount = countSate.count
+  });
+  ```
+  
+  - 统一导出：store/index.js
+  
+  ```js
+  // store/index.js
+  export * from './counter.js';
+  ```
+  
+  - 使用：Couter.jsx
+  
+  ```jsx
+  import { countSate, countActions } from '../store';
+  
+  export default function Counter() {
+      const { count } = useSnapshot(countSate);
+      return (
+          <>
+          	<div>{ count }</div>
+              <button className="increase" onClick={() => {countActions.increase(1)}}>+</button>
+              <button className="decrease" onClick={() => {countActions.decrease(1)}}>-</button>
+          </>
+      )
+  }
+  ```
+
+- **actions的多种写法**
+
+  - 单独分开写
+
+    ```js
+    export const state = proxy({ count: 0, })
+    export const increase = () => { ++state.count }
+    export const decrease = () => { --state.count }
+    ```
+
+  - 方法合并
+
+    ```js
+    export const state = proxy({ count: 0, })
+    export const actions = { 
+        increase: () => { ++state.count },
+        decrease: () => { --state.count },
+    }
+    ```
+
+  - this
+
+    ```js
+    export const state = proxy({ 
+        count: 0,
+        increase() { ++this.count },
+        decrease() { --this.count },
+    })
+    ```
+
+  - class
+
+    ```js
+    class State {
+        count = 0;
+        increase() { ++this.count } 
+        decrease() { --this.count } 
+    } 
+    export const state = proxy(new State())
+    ```
+
+#### 监听【subscribe、subscribeKey、watch】
+
+`useEffect`不能直接监听 proxy 方法创建的对象 （示例代码中的countSate）
+
+- **subscribeKey**：用于基本类型
+
+- **subscribe**：用于引用类型
+
+  subscribe 只能监听一次，需要写在`useEffect`中，只在初始化时监听一次
+
+  ```js
+  import { useSnapshot, subscribe} from 'valtio';
+  import { subscribeKey } from 'valtio/utils';
+  import { countSate } from '../store';
+  import { useEffect, useState } from 'react';
+  
+  export default function Counter() {
+      let [doubleCount, setDoubleCount] = useState(0);
+      // subscribeKey
+      useEffect(() => {
+          const unsubscribe = subscribeKey(countSate, 'count', (v) => {
+              setDoubleCount(v * 2);
+          });
+          return () => unsubscribe();
+      }, []);
+      /*
+      // subscribe
+      useEffect(() => {
+          const unsubscribe = subscribe(countSate, () => {
+              setDoubleCount(countSate.count * 2);
+          });
+          return () => unsubscribe();
+      }, []);
+      */
+      return (
+          <>
+              <div>subscribe computed doubleCount: {doubleCount}</div>
+          </>
+      )
+  }
+  ```
+
+- **watch**
+
+  ```js
+  import { watch } from 'valtio/utils';
+  import { countSate } from '../store';
+  
+  let test = 0;
+  watch((get) => {
+      get(counterStore);
+      test = counterStore.count + 1;
+  })
+  
+  export default function Counter() {
+      // 这里的test会跟着count一起变
+      return (
+          <div>watch test: {test}</div>
+      )
+  }
+  ```
+
+#### 计算属性【derive】
+
+- **derive**：基于一个状态产生另一个状态-派生
+
+  - 类似于vue中的**computed**
+  - 其实底层机制还是`subscribe`
+
+  - 需要配合snapshot才可以进行react组件刷新
+
+  ```jsx
+  import { useSnapshot } from 'valtio';
+  import { derive } from 'valtio/utils';
+  import { countSate } from '../store';
+  
+  const oddState = derive({
+      doubleCount: (get) => get(countSate).count * 2
+  })
+  
+  export default function Counter() {
+      const { count } = useSnapshot(countSate);
+      return (
+          <>
+              <div>count: {count}</div>
+              <div>subscribe computed doubleCount: {oddState.doubleCount}</div>
+          </>
+      )
+  }
+  ```
+
+#### ref
+
+如果这个东西你不想被proxy代理又想取值，那么可以使用ref进行包裹
+
+```js
+import { proxy, ref } from 'valtio'
+
+const state = proxy({
+  count: 0,
+  dom: ref(document.body),
+})
+```
+
+#### snapshot
+
+将 proxy 对象转为普通对象
+
+```js
+import { countSate } from '../store';
+const state = snapshot(countSate);
+```
+
+#### sync-取消批量更新
+
+问题：在不为空的输入框，将光标移到内容中间进行修改后，光标会重新移到最后。
+
+```jsx
+import { countSate } from '../store';
+
+export default function Counter() {
+    const { count } = useSnapshot(countSate, {sync: true});
+    return (
+        <>
+            <div>count: {count}</div>
+            <input type="text" value={count} onChange={(e) => countSate.count = e.target.value} />
+        </>
+    )
+}
+```
+
+#### 状态的回退和前进【proxyWithHistory】
+
+- **redo** 复现
+- **undo** 回退
+
+```js
+import { proxyWithHistory } from 'valtio/utils'
+
+const state = proxyWithHistory({ count: 0 });
+
+console.log(state.value) // ---> { count: 0 }
+state.value.count += 1
+console.log(state.value) // ---> { count: 1 }
+state.value.count += 1
+console.log(state.value) // ---> { count: 2 }
+state.undo()
+console.log(state.value) // ---> { count: 1 }
+state.undo()
+console.log(state.value) // ---> { count: 0 }
+state.redo()
+console.log(state.value) // ---> { count: 1 }
+state.redo()
+console.log(state.value) // ---> { count: 2 }
+```
