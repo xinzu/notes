@@ -52,6 +52,10 @@ module.exports = {
                         path: '/基础知识扩展/宏任务和微任务.md',
                     },
                     {
+                        title: 'ES7-ES12',
+                        path: '/基础知识扩展/ES7-ES12.md',
+                    },
+                    {
                         title: '其他',
                         path: '/基础知识扩展/other.md',
                     },
@@ -98,6 +102,9 @@ module.exports = {
                     }, {
                         title: 'vue-router',
                         path: '/vue/Vue-Router.md',
+                    }, {
+                        title: 'menorepo',
+                        path: '/vue/组件库搭建.md',
                     }
                 ]
             }, {
@@ -132,7 +139,10 @@ module.exports = {
                     },
                     {
                         title: 'node包开发',
-                        path: '/工具类/node包开发.md',
+                        path: '/工具类/node-翻译工具.md',
+                    }, {
+                        title: 'JavaScript开发工具的生态',
+                        path: '/工具类/JavaScript开发工具的生态.md',
                     }
                 ]
             },
