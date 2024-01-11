@@ -1,6 +1,6 @@
-# ES7(ES2016)
+## ES7(ES2016)
 
-## Array.prototype.includes()
+### Array.prototype.includes()
 
 `includes()` 方法用来判断一个数组是否包含一个指定的值，如果包含则返回 `true`，否则返回 `false`。
 
@@ -52,7 +52,7 @@ console.log(arr.includes("es7", -2)); // true
 
 **如果只想知道某个值是否在数组中存在，而并不关心它的索引位置，建议使用 includes(),如果想获取一个值在数组中的位置，那么使用 indexOf 方法**
 
-## 幂运算符 \*\*
+### 幂运算符 \*\*
 
 _幂运算符的两个\*号之间不能出现空格，否则语法会报错_
 
@@ -89,9 +89,9 @@ console.log(2 ** 10); // 1024
 NaN ** 2; // NaN
 ```
 
-# ES8(ES2017)
+## ES8(ES2017)
 
-## Object.values()
+### Object.values()
 
 `Object.values` 方法返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值。
 
@@ -104,7 +104,7 @@ const obj = {
 console.log(Object.values(obj)); // [ 'jimmy', 18, 188 ]
 ```
 
-## Object.entries()
+### Object.entries()
 
 `Object.entries() `方法返回一个数组，成员是参数对象自身的（不含继承的）所有可遍历属性的键值对数组。
 
@@ -118,7 +118,7 @@ console.log(Object.entries(obj)); // [ [ 'name', 'jimmy' ], [ 'age', 18 ], [ 'he
 console.log(Object.entries([1, 2, 3])); // [ [ '0', 1 ], [ '1', 2 ], [ '2', 3 ] ]
 ```
 
-## Object.getOwnPropertyDescriptors()
+### Object.getOwnPropertyDescriptors()
 
 `Object.getOwnPropertyDescriptors()` 方法用来获取一个对象的所有自身属性的描述符。
 
@@ -147,7 +147,7 @@ console.log(desc);
 }
 ```
 
-## String.prototype.padStart
+### String.prototype.padStart
 
 把指定字符串填充到字符串头部，返回新字符串。
 
@@ -197,7 +197,7 @@ str.padStart(targetLength [, padString])
   console.log(newTel); // *******5678
   ```
 
-## String.prototype.padEnd
+### String.prototype.padEnd
 
 把指定字符串填充到字符串尾部，返回新字符串。
 
@@ -210,7 +210,7 @@ str.padStart(targetLength [, padString])
 "abc".padEnd(1); // "abc"
 ```
 
-## 尾逗号 Trailing commas
+### 尾逗号 Trailing commas
 
 ES8 允许函数的最后一个参数有尾逗号（Trailing comma）。此前，函数定义和调用时，都不允许最后一个参数后面出现逗号。
 
@@ -218,13 +218,13 @@ ES8 允许函数的最后一个参数有尾逗号（Trailing comma）。此前�
 function test(param1, param2) {}
 ```
 
-## async/await
+### async/await
 
 **待补充**
 
-# ES9(ES2018)
+## ES9(ES2018)
 
-## Object Rest & Spread
+### Object Rest & Spread
 
 在 ES9 新增 Object 的 Rest & Spread 方法
 
@@ -272,7 +272,7 @@ const { a, ...rest } = input;
 console.log(a, rest); // 1 {b: 2, c: 3}
 ```
 
-## for...await...of
+### for...await...of
 
 `for...of`是同步运行的，不能遍历异步迭代器。
 
@@ -298,7 +298,7 @@ test();
 // 1560092346336 3000
 ```
 
-## Promise.prototype.finally()
+### Promise.prototype.finally()
 
 > Promise.prototype.finally() 方法返回一个 Promise，在 promise 执行结束时，无论结果是 fulfilled 或者是 rejected，在执行 then()和 catch()后，都会执行 finally 指定的回调函数。
 >
@@ -322,9 +322,9 @@ new Promise((resolve, reject) => {
 	});
 ```
 
-## String 扩展
+### String 扩展
 
-### 模板标签
+#### 模板标签
 
 ES6 用法
 
@@ -360,9 +360,9 @@ let string = `\u{61} and \unicode`;
 console.log(string); // Uncaught SyntaxError: Invalid Unicode escape sequence
 ```
 
-# ES10(ES2019)
+## ES10(ES2019)
 
-## Object.fromEntries()
+### Object.fromEntries()
 
 `Object.fromEntries() `把键值对列表转换为一个对象，这个方法是和 `Object.entries() `相对的。
 
@@ -423,7 +423,7 @@ Object.fromEntries([
   console.log(paramObj); // { name: 'jimmy', age: '18', height: '1.88' }
   ```
 
-## Array.prototype.flat()
+### Array.prototype.flat()
 
 `flat()` 方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。
 
@@ -437,7 +437,7 @@ let newArray = arr.flat([depth]);
 
 指定要提取嵌套数组的结构深度，默认值为 1。
 
-## Array.prototype.flatMap()
+### Array.prototype.flatMap()
 
 **语法**
 
@@ -465,15 +465,15 @@ arr.flatMap((s) => s.split(""));
 // ["今", "天", "天", "气", "不", "错", "", "早", "上", "好"]
 ```
 
-## String.prototype.trimStart()
+### String.prototype.trimStart()
 
 > trimStart() 方法从字符串的开头删除空格，trimLeft()是此方法的别名。
 
-## String.prototype.trimEnd()
+### String.prototype.trimEnd()
 
 > trimEnd() 方法从一个字符串的右端移除空白字符，trimRight 是 trimEnd 的别名。
 
-## 可选的 Catch Binding
+### 可选的 Catch Binding
 
 捕获异常`try...catch...`，在 ES10 可以省略 catch 的传参
 
@@ -487,7 +487,7 @@ try {
 } catch {}
 ```
 
-## Symbol.prototype.description
+### Symbol.prototype.description
 
 > `description` 是一个只读属性，它会返回 [`Symbol`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol) 对象的可选描述的字符串。
 
@@ -501,7 +501,7 @@ Symbol.for("foo").description; // foo
 `${Symbol("foo").description}bar`; // foobar
 ```
 
-## JSON.stringify() 增强能力
+### JSON.stringify() 增强能力
 
 > JSON.stringify 在 ES10 修复了对于一些超出范围的 Unicode 展示错误的问题。
 
@@ -510,7 +510,7 @@ Symbol.for("foo").description; // foo
 console.log(JSON.stringify("\uD83D\uDE0E")); // 打印出笑脸
 ```
 
-## 修订 Function.prototype.toString()
+### 修订 Function.prototype.toString()
 
 > 以前函数的 toString 方法来自 Object.prototype.toString(),现在的 Function.prototype.toString() 方法返回一个表示当前函数源代码的字符串。以前只会返回这个函数，不包含注释、空格等。
 
@@ -527,9 +527,9 @@ console.log(sum.toString());
 }"
 ```
 
-# ES11(ES2020)
+## ES11(ES2020)
 
-## 空值合并运算符（??）
+### 空值合并运算符（??）
 
 > 是一个逻辑操作符，当左侧的操作数为 `null`或者`undefined`时，返回其右侧操作数，否则返回左侧操作数。
 
@@ -564,7 +564,7 @@ _好东西好东西，后面如果值可能是 undefined 或者 false 时进行�
 
 **可选链不能用于赋值**
 
-## globalThis 全局对象
+### globalThis 全局对象
 
 在 Web 中，可以通过 `window`、`self` 取到全局对象，在 Node.js 中，它们都无法获取，必须使用 `global`。
 
@@ -589,7 +589,7 @@ const globals = getGlobal();
 
 现在`globalThis` 提供了一个标准的方式来获取不同环境下的全局对象，不管在什么环境，放心使用就行了。
 
-## BigInt
+### BigInt
 
 > **`BigInt`** 是一种内置对象，它提供了一种方法来表示大于 `2的53次方 \- 1` 的整数。
 
@@ -629,7 +629,7 @@ let c = number - 10n; // -8n
 let d = number / 2n; // 1
 ```
 
-## String.prototype.matchAll()
+### String.prototype.matchAll()
 
 > **`matchAll()`** 方法返回一个包含所有匹配正则表达式的结果及分组捕获组的迭代器。
 
@@ -652,7 +652,7 @@ while ((match = regexp.exec(str1)) !== null) {
 }
 ```
 
-## Promise.allSettled()
+### Promise.allSettled()
 
 `Promise.all()` 具有并发执行异步任务的能力。但它的最大问题就是如果其中某个任务出现异常(reject)，所有任务都会挂掉，Promise 直接进入 reject 状态。
 
@@ -686,7 +686,7 @@ Promise.allSettled(promises)
   });
 ```
 
-## Dynamic Import（按需 import）
+### Dynamic Import（按需 import）
 
 > `import()`可以在需要的时候，再加载某个模块。
 
@@ -703,19 +703,19 @@ button.addEventListener("click", (event) => {
 });
 ```
 
-# ES12(ES2021)
+## ES12(ES2021)
 
-## 逻辑运算符和赋值表达式（&&=，||=，??=）
+### 逻辑运算符和赋值表达式（&&=，||=，??=）
 
 - `x &&= y` 等同于 `x && (x = y)` 当 x 为 true 时给 x 赋值
 - `x ||= y` 等同于`x || (x = y)` 当 x 为 false 时给 x 赋值
 - `x ?? = y`等同于`x ?? (x = y)` 当 x 为 null 或 undefined 时给 x 赋值
 
-## String.prototype.replaceAll()
+### String.prototype.replaceAll()
 
 > 所有满足 `pattern` 的部分都会被`replacement` 替换
 
-## 数字分隔符
+### 数字分隔符
 
 > `ES2021`中允许 JavaScript 的数值使用下划线（`_`）作为分隔符。这个数值分隔符没有指定间隔的位数，也就是说，可以每三位添加一个分隔符，也可以每一位、每两位、每四位添加一个。
 
@@ -742,7 +742,7 @@ button.addEventListener("click", (event) => {
 - 小数点的前后不能有分隔符。
 - 科学计数法里面，表示指数的`e`或`E`前后不能有分隔符。
 
-## Promise.any
+### Promise.any
 
 > 方法接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例返回。
 >
