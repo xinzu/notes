@@ -70,7 +70,7 @@ module.exports = {
                     },
                     {
                         title: 'scss',
-                        path: '/css/scss、less.md',
+                        path: '/css/scss.md',
                     },
                 ]
             },
