@@ -52,8 +52,8 @@ module.exports = {
                         path: '/基础知识扩展/宏任务和微任务.md',
                     },
                     {
-                        title: 'ES7-ES12',
-                        path: '/基础知识扩展/ES7-ES12.md',
+                        title: 'ES7-ES13',
+                        path: '/基础知识扩展/ES7-ES13.md',
                     },
                     {
                         title: '其他',

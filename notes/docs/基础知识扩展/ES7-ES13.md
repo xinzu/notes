@@ -258,7 +258,7 @@ function test(param1, param2) {}
   console.log(copy1.x === copy2.x); // → true
   ```
 
-**rest**示例
+**rest示例**
 
 当对象 key-value 不确定的时候，把必选的 key 赋值给变量，用一个变量收敛其他可选的 key 数据。**rest 属性必须始终出现在对象的末尾**，否则将抛出错误。
 
@@ -761,3 +761,220 @@ Promise.any(promises)
     console.log("error", error);
   });
 ```
+
+## ES13(ES2022)
+
+### 顶层await
+
+在ES13 允许在模块的顶层使用 await， 并且不再需要配合 async函数使用，它允许模块充当大型异步函数，使得我们在 ESM 模块中可以等待资源的加载，只有资源加载完毕之后才会去执行当前模块的代码
+
+### Object.hasOwn()
+
+> 旨在取代`Object.prototype.hasOwnProperty()`
+
+如果指定的对象*自身*有指定的属性，则静态方法 **`Object.hasOwn()`** 返回 `true`。如果属性是继承的或者不存在，该方法返回 `false`。
+
+```js
+const object1 = {
+  prop: 'exists',
+};
+
+console.log(Object.hasOwn(object1, 'prop')); // true
+console.log(Object.hasOwn(object1, 'toString')); // false
+console.log(Object.hasOwn(object1, 'undeclaredPropertyValue')); // false
+```
+
+### Array.at()
+
+用于根据给定的索引来获取 *数组/字符串* 元素。
+
+当给定索引为正数时，与`arr[index]`具有相同的行为；当给定的索引为负数时，会从数组的最后一项开始检索。
+
+```js
+// 数组
+const array = [0,1,2,3,4,5];
+
+console.log(array[array.length-1]);  // 5
+console.log(array.at(-1));  // 5
+
+console.log(array[array.lenght-2]);  // 4
+console.log(array.at(-2));  // 4
+
+// 字符串
+const str = "hello world";
+
+console.log(str[str.length - 1]);  // d
+console.log(str.at(-1));  // d
+```
+
+### error.cause
+
+在`new Error()` 中可以指定导致它的原因
+
+```js
+try {
+    // ···
+} catch (error) {
+    throw new Error(
+        'throw a error',
+        {cause: error}
+    );
+}
+```
+
+### 正则表达式匹配索引
+
+新增 /d 。返回值会增加一个新的属性 indices，包含匹配对象的开始和结束索引
+
+```js
+const str = 'hello world';
+str.match(/hell(.*)?o(.*)?/d);
+// 新增了属性indices，indices: [[0, 11], [4, 7], [8, 11]
+//  ['hello world', 'o w', 'rld', index: 0, input: 'hello world', groups: undefined, indices: [[0, 11], [4, 7], [8, 11]]
+```
+
+### 数组逆向查找
+
+`findLast` 和 `findLastIndex`
+
+对应正向查找的 `find` 和 `findIndex`
+
+```js
+const inventory = [
+  { name: "apples", quantity: 2 },
+  { name: "bananas", quantity: 0 },
+  { name: "fish", quantity: 1 },
+  { name: "cherries", quantity: 5 },
+];
+
+// 库存低时返回 true
+function isNotEnough(item) {
+  return item.quantity < 2;
+}
+
+console.log(inventory.findLast(isNotEnough));
+// { name: "fish", quantity: 1 }
+```
+
+### 类
+
+#### 公共字段声明
+
+允许将属性示例添加到类定义中，不需要在`constructor`构造函数中声明
+
+```js
+// 之前
+class Car {
+  constructor() {
+    this.color = 'blue';
+    this.age = 2;
+  }
+}
+
+// ES13
+class Car {
+  color = 'blue';
+  age = 2;
+}
+```
+
+#### 私有实例字段、方法和访问器
+
+ES13之前，不能在类中声明私有成员，成员通常以下划线 (_) 为前缀，表示它是私有的，但仍然可以从类外部访问和修改。
+
+私有类字段使用哈希`#`前缀定义，试图从类外部访问它们会导致错误
+
+#### 静态公共字段
+
+```js
+class Car {
+  static color = 'blue';
+
+  static getColor() {
+    return this.color;
+  }
+
+  getMessage() {
+    return `color：${this.color}` ;
+  }
+}
+
+// 直接用类本身访问静态属性和方法
+Car.getColor(); // blue
+Car.color; // blue
+Car.hasOwnProperty('color'); // true
+
+// 实例不能访问静态属性和方法
+const car = new Car()
+car.getMessage(); // color：undefined
+car.getColor(); // Error: car.getColor is not a function
+car.hasOwnProperty('color'); // false
+```
+
+#### 静态私有字段和方法
+
+```js
+class Person {
+  static #count = 0;
+  static getCount() {
+    return this.#count;
+  }
+  constructor() {
+    this.constructor.#incrementCount();
+  }
+  static #incrementCount() {
+    this.#count++;
+  }
+}
+console.log(Person.getCount()); // 0
+const p1 = new Person();
+console.log(Person.getCount()); // 1
+```
+
+**子类使用父类的私有静态方法时，使用this会报错**
+
+```js
+class Student extends Person {}
+Student.getCount();// Cannot read private member #count from an object whose class did not declare it
+```
+
+`Student.getCount()`调用方法时，`this`指向 `Student`类，它无权访问私有字段`#count`
+
+修改为
+
+```js
+class Person {
+  static #count = 0;
+  static getCount() {
+    return Person.#count;
+  }
+  constructor() {
+    this.constructor.#incrementCount();
+  }
+  static #incrementCount() {
+    Person.#count++;
+  }
+}
+```
+
+#### 静态块
+
+在类中通过static关键字定义一系列静态代码块，这些代码块只会在类被创造的时候**执行一次**
+
+```js
+class Person {
+  static #count = 0;
+  static getCount() {
+    return Person.#count;
+  }
+  static {
+    this.#incrementCount();
+  }
+  static #incrementCount() {
+    Person.#count++;
+  }
+}
+
+console.log(Person.getCount()); // 1
+```
+
