@@ -226,6 +226,14 @@
     "execa" "^8.0.1"
     "yargs" "^17.0.0"
 
+"@commitlint/config-conventional@^19.0.3":
+  "integrity" "sha512-vh0L8XeLaEzTe8VCxSd0gAFvfTK0RFolrzw4o431bIuWJfi/yRCHJlsDwus7wW2eJaFFDR0VFXJyjGyDQhi4vA=="
+  "resolved" "https://registry.npmmirror.com/@commitlint/config-conventional/-/config-conventional-19.0.3.tgz"
+  "version" "19.0.3"
+  dependencies:
+    "@commitlint/types" "^19.0.3"
+    "conventional-changelog-conventionalcommits" "^7.0.2"
+
 "@commitlint/config-validator@^19.0.3":
   "integrity" "sha512-2D3r4PKjoo59zBc2auodrSCaUnCSALCx54yveOFwwP/i2kfEAQrygwOleFWswLqK0UL/F9r07MFi5ev2ohyM4Q=="
   "resolved" "https://registry.npmmirror.com/@commitlint/config-validator/-/config-validator-19.0.3.tgz"
@@ -772,6 +780,13 @@
   "integrity" "sha512-ROjNchA9LgfNMTTFSIWPzebCwOGFdgkEq45EnvvrmSLvCtAw0HSmrCs7/ty+wAeYUZyNay0YMUNYFTRL72PkBQ=="
   "resolved" "https://registry.npmmirror.com/conventional-changelog-angular/-/conventional-changelog-angular-7.0.0.tgz"
   "version" "7.0.0"
+  dependencies:
+    "compare-func" "^2.0.0"
+
+"conventional-changelog-conventionalcommits@^7.0.2":
+  "integrity" "sha512-NKXYmMR/Hr1DevQegFB4MwfM5Vv0m4UIxKZTTYuD98lpTknaZlSRrDOG4X7wIXpGkfsYxZTghUN+Qq+T0YQI7w=="
+  "resolved" "https://registry.npmmirror.com/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-7.0.2.tgz"
+  "version" "7.0.2"
   dependencies:
     "compare-func" "^2.0.0"
 
